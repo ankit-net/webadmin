@@ -7,13 +7,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="institute_department")
-public class Institute_Department {
+@Table(name="institute_campus")
+public class Institute_Campus {
+	 
 	private int id;
 	private Institute institute_id;
 	private String name;
 	private String description;
+	private int accomodation;
+	private int is_default;
+	private String address;
 	private int is_active;
+	private AdminUser created_by_id;
+	
 	@Id
 	public int getId() {
 		return id;
@@ -41,12 +47,37 @@ public class Institute_Department {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public int getAccomodation() {
+		return accomodation;
+	}
+	public void setAccomodation(int accomodation) {
+		this.accomodation = accomodation;
+	}
+	public int getIs_default() {
+		return is_default;
+	}
+	public void setIs_default(int is_default) {
+		this.is_default = is_default;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	public int getIs_active() {
 		return is_active;
 	}
 	public void setIs_active(int is_active) {
 		this.is_active = is_active;
 	}
-	
+	@ManyToOne
+	@JoinColumn(name="created_by_id",referencedColumnName="id")
+	public AdminUser getCreated_by_id() {
+		return created_by_id;
+	}
+	public void setCreated_by_id(AdminUser created_by_id) {
+		this.created_by_id = created_by_id;
+	}
 	
 }

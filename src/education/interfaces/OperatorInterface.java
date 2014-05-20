@@ -31,23 +31,31 @@ public interface OperatorInterface {
 	
 	void editCourse();
 		
-	void showCourses();
+	List showCourses(Session session, int institute_id);
+	
+	int countCourses(Session session,int institute_id);
 	
 	void addDepartment();
 	
 	void editDepartment();
 		
-	void showDepartments();
+	List showDepartments(Session session,int institute_id);
+	
+	int countDeparments(Session session,int institute_id);
 	
 	void addMedia();
 	
 	void editMedia();
 	
-	void showMediaList();
+	List showMediaList(Session session,int institute_id);
+	
+	int countMedia(Session session,int institute_id);
 	
 	void addCampus();
 	
 	void editCampus();
 	
-	void showCampuses();
+	List showCampuses(Session session,int institute_id);
+	
+	int countCampuses(Session session,int institute_id);
 }

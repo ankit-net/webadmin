@@ -105,9 +105,46 @@ public class OperatorImplementation implements OperatorInterface{
 
 
 	@Override
-	public void showCourses() {
+	public List showCourses(Session session,int institute_id) {
 		// TODO Auto-generated method stub
+		System.out.println("entered showcourses dao");
+		System.out.println("institute_id=>"+institute_id);
+		List courseslist = new ArrayList();
+		String courses_query = "select ic.id,ic.name,ic.is_active from Institute_Course ic where ic.institute_id.id=:instituteid";
 		
+		Query query = session.createQuery(courses_query);
+		query.setInteger("instituteid", institute_id);
+		
+		List courses = query.list();
+		System.err.println("total courses found=>"+courses.size()+"\t for institute id=>"+institute_id);
+		
+		for(Iterator itr=courses.iterator();itr.hasNext();){
+			Object[] coursebean = (Object[]) itr.next();
+			HashMap<String, Object> coursemap= new HashMap<String, Object>();
+			coursemap.put("courseid", coursebean[0]);
+			coursemap.put("coursename", coursebean[1]);
+			coursemap.put("isactive", coursebean[2]);
+			courseslist.add(coursemap);
+		}
+		
+		System.out.println("exit showcourses dao");
+		return courseslist;
+	}
+	@Override
+	public int countCourses(Session session, int institute_id) {
+		// TODO Auto-generated method stub
+		System.out.println("entered countcourses dao");
+		String count_courses = "select count(*) from Institute_Course ic where ic.institute_id.id =:instituteid";
+
+		Query query = session.createQuery(count_courses);
+		query.setInteger("instituteid", institute_id);
+		
+		List courselist = query.list();
+		int count = Integer.parseInt(courselist.get(0).toString());
+		
+		System.out.println("total courses found=>"+count);
+		System.out.println("exit countcourses dao");
+		return count;
 	}
 
 	@Override
@@ -124,9 +161,42 @@ public class OperatorImplementation implements OperatorInterface{
 
 
 	@Override
-	public void showDepartments() {
+	public List showDepartments(Session session,int institute_id) {
 		// TODO Auto-generated method stub
+		System.out.println("entered showdepartments dao");
+		System.out.println("institute id=>"+institute_id);
+		List deptlist = new ArrayList();
+		String query_deptlist = "select ind.id,ind.name,ind.description,ind.is_active from Institute_Department ind where ind.institute_id.id=:instituteid";
+		Query query = session.createQuery(query_deptlist);
+		query.setInteger("instituteid", institute_id);
+		List deptlist_raw = query.list();
+		for(Iterator itr = deptlist_raw.iterator();itr.hasNext();){ 
+			Object[] deptbean = (Object[]) itr.next();
+			HashMap<String, Object> deptmap = new HashMap<String, Object>();
+			deptmap.put("deptid", deptbean[0]);
+			deptmap.put("deptname", deptbean[1]);
+			deptmap.put("description", deptbean[2]);
+					
+			deptlist.add(deptmap);
+		}
 		
+		System.out.println("exit showdepartments dao");
+		
+		return deptlist;
+	}
+	@Override
+	public int countDeparments(Session session, int institute_id) {
+		// TODO Auto-generated method stub
+		String count_dept = "select count(*) from Institute_Department ic where ic.institute_id.id =:instituteid";
+
+		Query query = session.createQuery(count_dept);
+		query.setInteger("instituteid", institute_id);
+		
+		List courselist = query.list();
+		int count = Integer.parseInt(courselist.get(0).toString());
+		
+		System.out.println("count for department=>"+count);
+		return count;
 	}
 
 	@Override
@@ -142,9 +212,45 @@ public class OperatorImplementation implements OperatorInterface{
 	}
 
 	@Override
-	public void showMediaList() {
+	public List showMediaList(Session session,int institute_id) {
 		// TODO Auto-generated method stub
+		System.out.println("Entered showmedia dao");
+		System.out.println("institute_id=>"+institute_id);
+		List medialist = new ArrayList();
+		String query_medialist = "select im.id,im.media_type_id.name as mediatype,im.title,im.path  from Institute_Media im	where im.institute_id.id=:instituteid";
+		Query query = session.createQuery(query_medialist);
+		query.setInteger("instituteid", institute_id);
 		
+		List medialist_raw = query.list();
+		
+		for(Iterator itr = medialist_raw.iterator();itr.hasNext();){
+			Object[] mediabean = (Object[]) itr.next();
+			HashMap<String, Object> mediamap = new HashMap<String, Object>();
+			mediamap.put("mediaid", mediabean[0]);
+			mediamap.put("mediatype", mediabean[1]);
+			mediamap.put("title", mediabean[2]);
+			mediamap.put("path", mediabean[3]);
+			
+			medialist.add(mediamap);
+		}
+		System.out.println("Exit showmedia dao");
+		
+		return medialist;
+	}
+	@Override
+	public int countMedia(Session session, int institute_id) {
+		// TODO Auto-generated method stub
+		String count_media = "select count(*) from Institute_Media ic where ic.institute_id.id =:instituteid";
+
+		Query query = session.createQuery(count_media);
+		query.setInteger("instituteid", institute_id);
+		
+		List courselist = query.list();
+		int count = Integer.parseInt(courselist.get(0).toString());
+		
+		System.out.println("count for department=>"+count);
+
+		return count;
 	}
 	
 	@Override
@@ -158,10 +264,43 @@ public class OperatorImplementation implements OperatorInterface{
 		
 	}
 	@Override
-	public void showCampuses() {
+	public List showCampuses(Session session,int institute_id) {
 		// TODO Auto-generated method stub
+		System.out.println("entered showcampuses dao");
+		List campuslist = new ArrayList();
+		String query_campuslist = "select ic.id,ic.name,ic.accomodation,ic.is_active from Institute_Campus ic where ic.institute_id.id=:instituteid";
+		Query query = session.createQuery(query_campuslist);
+		query.setInteger("instituteid", institute_id);
 		
+		List campuslist_raw = query.list();
+		for(Iterator itr=campuslist_raw.iterator();itr.hasNext(); ){
+			Object[] campusbean = (Object[]) itr.next();
+			HashMap<String, Object> campusmap = new HashMap<String, Object>();
+			campusmap.put("id", campusbean[0]);
+			campusmap.put("campusname", campusbean[1]);
+			campusmap.put("accomodation", campusbean[2]);
+			campusmap.put("isactive", campusbean[3]);
+			
+			campuslist.add(campusmap);
+		}
+		System.out.println("exit showcampuses dao");
+		
+		return campuslist;
 	}
-	
+	@Override
+	public int countCampuses(Session session, int institute_id) {
+		// TODO Auto-generated method stub
+		String count_campuses = "select count(*) from Institute_Campus ic where ic.institute_id.id =:instituteid";
+
+		Query query = session.createQuery(count_campuses);
+		query.setInteger("instituteid", institute_id);
+		
+		List courselist = query.list();
+		int count = Integer.parseInt(courselist.get(0).toString());
+		
+		System.out.println("count for department=>"+count);
+
+		return count;
+	}
 	
 }

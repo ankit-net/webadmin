@@ -3,18 +3,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   
 <html>
 <head>
-<script src="<%=request.getContextPath()%>/js/jquery-1.10.2.js"></script>
-<link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/css/admintabs.css">
-<script type="text/javascript" src="<%=request.getContextPath() %>/js/admintabs.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath() %>/js/cities.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath() %>/js/pagination.js"></script>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>WebAdmin - Administrator Main Page</title>
+	<script src="<%=request.getContextPath()%>/js/jquery-1.10.2.js"></script>
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/css/admintabs.css">
+	<script type="text/javascript" src="<%=request.getContextPath() %>/js/admintabs.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath() %>/js/cities.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath() %>/js/pagination.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>WebAdmin - Administrator Main Page</title>
 </head>
 <body>
 	<div align="center">Administrator Main Page</div>
 	<p align="right">Welcome, ${myuser} </p>
-		<ul class="tabs">
+	<ul class="tabs">
 		<li><a href="#tab1">Users</a></li>
 		<li><a href="#tab2">States</a></li>
 		<li><a href="#tab3">Cities</a></li>

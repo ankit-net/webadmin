@@ -31,14 +31,22 @@ public class InstituteListingService {
 		System.out.println("exit service method");
 	}
 	
-	public void getDetails(Integer instituteid){
+	public void getDetails(Integer instituteid,ModelMap map){
 		System.out.println("entered service method");
-		
+		Session session = factory.openSession();
 		OperatorImplementation operatorimpl = new OperatorImplementation();
 		//operator impl will call showcourses,show departments,showmedia,showcampuses
+	
+		map.addAttribute("courses", operatorimpl.showCourses(session, instituteid));
+		map.addAttribute("coursecount", operatorimpl.countCourses(session, instituteid));
+		map.addAttribute("departments", operatorimpl.showDepartments(session, instituteid));
+		map.addAttribute("departmentcount", operatorimpl.countDeparments(session, instituteid));
+		map.addAttribute("campuses", operatorimpl.showCampuses(session, instituteid));
+		map.addAttribute("campusescount", operatorimpl.countCampuses(session, instituteid));
+		map.addAttribute("medialist", operatorimpl.showMediaList(session, instituteid));
+		map.addAttribute("countmedia", operatorimpl.countMedia(session, instituteid));
 		
-		
-		
+		session.close();
 		System.out.println("exit service method");
 	}
 }
