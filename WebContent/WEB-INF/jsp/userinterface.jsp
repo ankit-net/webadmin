@@ -14,10 +14,30 @@
 	
 	
 	
-<br/>
-	Total Institutes Found: <c:out value="${count}"/> <br/>
+
 	
+	<div id="alldetails" style="display:none"> 
+		<ul class='tabs'>
+			<li><a href='#tab1'>Courses</a></li>
+			<li><a href='#tab2'>Departments</a></li>
+		</ul>
+		<div class='tabContainer'>
+			<div id='tab1' class='tabContent'>
+				<b>Courses</b>
+				<p id="coursesid"></p>
+			</div>
+			<div id='tab2' class='tabContent'>
+				<b>Departments</b>
+				<p id="departmentid"></p>
+			</div>
+		</div>
+	</div>
+	<br/>
+	<br/>
 	<table border="1">
+		<tr>
+			<td align="center"  colspan="7">Total Institutes Found: <c:out value="${count}"/> </td>
+		</tr>
 		<tr bgcolor="pink">
 			<th>ID</th>
 			<th>Institute Name</th>
@@ -25,7 +45,9 @@
 			<th>Location</th>
 			<th>Created By</th>
 			<th>Created Date</th>
+			<th>Expand</th>
 		</tr>
+		
 		<c:forEach items="${institutes}" var="inst">
 			<tr>
 				<td>${inst.institute_id}</td>
@@ -36,12 +58,12 @@
 				<td>${inst.created_date}</td>
 				<td><button id="${inst.institute_id}">Click Here</button></td>
 			</tr>
-			<tr style="display:none" id="div${inst.institute_id}">
-				<td colspan="10">
-					Ankit${inst.institute_id}					
-				</td>
-			</tr>
+					
 		</c:forEach>
+		
+		
 	</table>
+	
+
 </body>
 </html>

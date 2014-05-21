@@ -21,7 +21,7 @@ public interface OperatorInterface {
 	
 	int countInstitutes(Session session);
 	
-	List allparentcategories(Session session);
+	List showparentcategories(Session session);
 	
 	void showFilters();
 	

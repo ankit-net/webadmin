@@ -14,6 +14,7 @@
 <body>
 	<div align="center">Administrator Main Page</div>
 	<p align="right">Welcome, ${myuser} </p>
+	
 	<ul class="tabs">
 		<li><a href="#tab1">Users</a></li>
 		<li><a href="#tab2">States</a></li>
@@ -31,7 +32,6 @@
 			<div id="dynamicusers">
 			<table border="1" align="center">
 				<tr bgcolor="pink">	
-					
 					<th>ID</th>
 					<th>UserName</th>
 					<th>Password</th>

@@ -71,13 +71,47 @@ public class OperatorImplementation implements OperatorInterface{
 		return count;
 	}
 	@Override
-	public List allparentcategories(Session session) {
+	public List showparentcategories(Session session) {
 		System.err.println("Entered getParentCategories");
 		List allcategories = new ArrayList();
+		
+		String hql_maincategories = "select ca.id,cl.name as categoryname from Category ca inner join Category_Language cl on ca.id=cl.category_id where ca.parent_id.id is null";
+		Query query = session.createQuery(hql_maincategories);
+		List allcategories_raw = query.list();
+		for(Iterator itr=allcategories_raw.iterator();itr.hasNext();){
+			HashMap<String, Object> categoriesmap = new HashMap<String, Object>();
+			Object[] categorybean  = (Object[]) itr.next();
+			categoriesmap.put("id", categorybean[0]);
+			categoriesmap.put("categoryname", categorybean[1]);
+			
+			allcategories.add(categoriesmap);
+		}
+		
 		System.err.println("Exit getParentCategories");
 		
 		return allcategories;
 	}
+		
+	public List showchildcategories(Session session,int categoryid){
+		List childcategories = new ArrayList();
+		String hql_childcategories = "select ca.id,cl.name as categoryname from Category ca inner join Category_Language cl on ca.id=cl.category_id where ca.parent_id.id=:parentid";
+	
+		Query query = session.createQuery(hql_childcategories);
+		List childcategories_raw = query.list();
+		for(Iterator itr = childcategories_raw.iterator();itr.hasNext();) {
+			Object[] categorybean = (Object[]) itr.next();
+			HashMap<String, Object> categorymap = new HashMap<String, Object>();
+			
+			categorymap.put("id", categorybean[0]);
+			categorymap.put("categoryname", categorybean[1]);
+			
+			childcategories.add(categorymap);
+		}
+		
+		
+		return childcategories;
+	}
+	
 	
 	@Override
 	public void showFilters() {
