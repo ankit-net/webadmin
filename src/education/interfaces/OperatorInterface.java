@@ -16,14 +16,13 @@ public interface OperatorInterface {
 	void addInstitute();
 	
 	void editInstitute();
-		
+
 	List showInstitutes(Session session,int pageno,int recordperpage);
 	
 	int countInstitutes(Session session);
 	
 	List showInstitutes_Filter(Session session,HashMap<String, Object> parameters);
-	
-	
+		
 	List showparentcategories(Session session);
 	
 	void showFilters();
