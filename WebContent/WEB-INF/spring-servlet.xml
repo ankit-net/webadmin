@@ -36,7 +36,9 @@
 				 p:packagesToScan="education"/>
 	
 	<!-- Declare a datasource that has pooling capabilities-->	 
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+	
+	
+	<!-- bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 				destroy-method="close"
 				p:driverClass="${app.jdbc.driverClassName}"
 				p:jdbcUrl="${app.jdbc.url}"
@@ -46,10 +48,16 @@
 				p:idleConnectionTestPeriod="60"
 				p:maxPoolSize="2"
 				p:maxStatements="50"
-				p:minPoolSize="1" />
+				p:minPoolSize="1" 
 
 	
-
+-->
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${app.jdbc.driverClassName}"/>
+        <property name="url" value="${app.jdbc.url}"/>
+        <property name="username" value="${app.jdbc.username}"/>
+        <property name="password" value="${app.jdbc.password}"/>  
+    </bean>    
 	
 	<!-- Declare a transaction manager-->
 	<bean id="transactionManager" 

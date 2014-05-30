@@ -257,8 +257,14 @@ public class AdminstratorImplementation implements AdministratorInterface{
 		Query query = session.createQuery(querycities);
 		query.setInteger(0, countryid);
 		query.setInteger(1, stateid);
-		query.setFirstResult((pageno - 1) * recordperPage);
-		query.setMaxResults(recordperPage);
+		if(pageno != -1){
+			query.setFirstResult((pageno - 1) * recordperPage);
+			query.setMaxResults(recordperPage);
+		}
+		else {
+			//this will load all cities available
+		}
+		
 		cities  = query.list();
 		
 		System.out.println("Exit show cities dao");

@@ -2,8 +2,10 @@ package education.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -70,12 +72,161 @@ public class OperatorImplementation implements OperatorInterface{
 		System.out.println("exit count institutes dao");
 		return count;
 	}
+	
+	@Override
+	public List showInstitutes_Filter(Session session,
+			HashMap<String, Object> parameters) {
+		// TODO Auto-generated method stub
+		System.out.println("Entered filter institutes dao");
+		Integer maincategory = (Integer) parameters.get("maincategory");
+		Integer[] childcategories = (Integer[]) parameters.get("childcategory");
+		Integer stateid = (Integer) parameters.get("statesid");
+		Integer[] cities = (Integer[]) parameters.get("citiesid");
+		Integer rowsperpage = (Integer) parameters.get("rowperpage");
+		Integer currentpage = (Integer) parameters.get("currentpage");
+		
+		
+		StringBuilder institutes_filter = new StringBuilder("SELECT DISTINCT inst.id as institute_id, inst.member_id.name as institute_name, inst.instype.name as institute_type, inst.city_id.name as city, inst.state_id.name as state , inst.country_id.name as country, inst.created_by_id.username as createdby,inst.created_date FROM Institute inst WHERE ");
+		
+		
+	//	Query query = session.createQuery("SELECT inst.id, inst.member_id.name, inst.institute_type, inst.city_id.name, inst.state_id.name , inst.country_id.name , inst.created_by_id.username , inst.verified_by_id.username FROM Institute inst WHERE inst.state_id.id = :states AND inst.city_id.id IN (:cities) ORDER BY inst.member_id.name ");
+	//	query.setParameter("states", statesid);
+	//	query.setParameterList("cities", citiesid); 
+		int startrow =	((currentpage - 1)	* rowsperpage) ; 
+		int endrow = (startrow + rowsperpage);
+		int[] allcategories = null;
+		if(childcategories[0] != -1){
+			//child category is also selected with main category
+			allcategories = new int[childcategories.length + 1]; 
+		}
+		else{
+			//only main category is being selected
+			allcategories  = new int[childcategories.length];
+		}
+		
+		
+		
+		System.out.println("startrow=>"+startrow+"\tendrow=>"+endrow);
+	
+		System.out.println("query executed before checking=>"+institutes_filter.toString());
+		
+		if(maincategory == -1 && childcategories[0] == -1 && stateid == -1 && cities[0] == -1){
+			//this means no filter had been selected
+			System.out.println("no filter had been selected");
+			institutes_filter.replace(institutes_filter.length() -7, institutes_filter.length(), "");
+		}
+		else {
+			
+			/*if(childcategory[0] != -1){
+				//some child category had been selected
+				querybuilder.replace(querybuilder.length() -7, querybuilder.length(), "");
+				querybuilder.append(" ,Institute_Course_Category icc where icc.pk.institute_id.id = inst.id AND icc.pk.category_id in (:child) ");
+			}*/
+			if(maincategory != -1){
+				//some main category had been selected
+				institutes_filter.replace(institutes_filter.length() - 7, institutes_filter.length(), "");
+				
+				
+				
+				if(childcategories[0] != -1){
+					//some child category also been selected
+					for(int i=0;i< childcategories.length;i++){
+						allcategories[i] = childcategories[i];
+					}
+					allcategories[childcategories.length] = maincategory; 
+					
+					institutes_filter.append(" ,Institute_Course_Category icc where icc.pk.institute_id.id = inst.id AND icc.pk.category_id IN (:categories) ");
+				}
+				else {
+					//only main category is being selected
+					allcategories[0] = maincategory;
+							
+					//querybuilder.replace(querybuilder.length() -7, querybuilder.length(), "");
+					institutes_filter.append(" ,Institute_Course_Category icc where icc.pk.institute_id.id = inst.id AND icc.pk.category_id IN (:categories) ");
+				}
+			}
+			if(cities[0] != -1){
+				//some city had been selected
+				institutes_filter.append(" inst.city_id.id IN (:cities) ");
+				
+			}
+			else {
+				//no city had been selected
+				
+			}
+			if(stateid != -1){
+				//some state had been selected
+				if(cities[0] != -1){
+					institutes_filter.append(" AND inst.state_id.id = :states");
+				}
+				else if(allcategories[0] != 0) {
+					institutes_filter.append(" AND inst.state_id.id = :states");
+				}
+				else {
+					institutes_filter.append(" inst.state_id.id = :states");
+				}
+				
+			}
+			else {
+				
+			}
+		}
+		
+		institutes_filter.append(" ORDER BY inst.member_id.name ");
+		
+		
+		System.out.println("query exceute for filters=>"+institutes_filter.toString());
+		Query query = session.createQuery(institutes_filter.toString());
+		
+		if(cities[0] != -1){
+			query.setParameterList("child", cities);
+		}
+		if(maincategory != -1){
+			Set<Integer> categories_set = new HashSet<Integer>();
+			for(Integer current:allcategories){
+				categories_set.add(current);
+			}
+			
+			query.setParameterList("categories",categories_set);
+		}
+		if(stateid != -1){
+			query.setParameter("states", stateid);
+		}
+		
+		query.setFirstResult(startrow);
+		query.setMaxResults(rowsperpage);
+		List<Object> institutes_hql = query.list();
+		ArrayList<Object> institutecollection = new ArrayList();
+		for(Iterator itr= institutes_hql.iterator();itr.hasNext();){
+			Object[] instituteResult = (Object[]) itr.next();
+			HashMap<String, Object> currentinstitute = new HashMap<String, Object>();
+			currentinstitute.put("id",(Integer)	instituteResult[0]);
+			currentinstitute.put("name", (String) instituteResult[1]);
+			currentinstitute.put("type", (String) instituteResult[2]);
+			currentinstitute.put("city", (String) instituteResult[3]);
+			currentinstitute.put("state", (String) instituteResult[4]);
+			currentinstitute.put("country", (String) instituteResult[5]);
+			currentinstitute.put("createdby", (String) instituteResult[6]);
+			
+			institutecollection.add(currentinstitute);
+		}
+		
+		//query.setParameterList(arg0, arg1)
+		System.out.println("institutes_hql->"+institutes_hql.size());
+		
+		
+		System.out.println("Exit filter institutes dao");
+		return null;
+	}
+	
+	
+	
 	@Override
 	public List showparentcategories(Session session) {
 		System.err.println("Entered getParentCategories");
 		List allcategories = new ArrayList();
 		
-		String hql_maincategories = "select ca.id,cl.name as categoryname from Category ca inner join Category_Language cl on ca.id=cl.category_id where ca.parent_id.id is null";
+		String hql_maincategories = "select ca.id,cl.name as categoryname from Category ca, Category_Language cl where  ca.id=cl.pkid.category_id.id and ca.parent_id.id is null";
 		Query query = session.createQuery(hql_maincategories);
 		List allcategories_raw = query.list();
 		for(Iterator itr=allcategories_raw.iterator();itr.hasNext();){
@@ -94,9 +245,10 @@ public class OperatorImplementation implements OperatorInterface{
 		
 	public List showchildcategories(Session session,int categoryid){
 		List childcategories = new ArrayList();
-		String hql_childcategories = "select ca.id,cl.name as categoryname from Category ca inner join Category_Language cl on ca.id=cl.category_id where ca.parent_id.id=:parentid";
+		String hql_childcategories = "select ca.id,cl.name as categoryname from Category ca, Category_Language cl where ca.id=cl.pkid.category_id.id and ca.parent_id.id=:parentid";
 	
 		Query query = session.createQuery(hql_childcategories);
+		query.setInteger("parentid", categoryid);
 		List childcategories_raw = query.list();
 		for(Iterator itr = childcategories_raw.iterator();itr.hasNext();) {
 			Object[] categorybean = (Object[]) itr.next();

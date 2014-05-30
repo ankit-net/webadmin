@@ -14,9 +14,9 @@
 		<!-- JDBC Connection Pool (use the built-in) -->
 		<property name="connection.pool_size">1</property>
 		
-		<!--Oracle SQL Dialect -->
+		<!--Oracle SQL Dialect 
 		<property name="dialect">org.hibernate.dialect.Oracle10gDialect</property>
-		
+		-->
 		<!-- MySQL Dialect -->
 		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
 		

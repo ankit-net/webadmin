@@ -7,12 +7,57 @@
 	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath() %>/css/admintabs.css">
 	<script type="text/javascript" src="<%=request.getContextPath() %>/js/admintabs.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/js/institutedetails.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/js/filter.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>WebAdmin - User Interface Page</title>
 </head>
 <body>
-	
-	
+		
+	<table width="100%" border="0" align="center">
+		<tr>
+			<td>MainCategory: <select id="maincat">
+					<option value="-1">--Please Select--</option>
+					<c:forEach items="${maincategories}" var="cat">
+						<option value="${cat.id}"><c:out value="${cat.categoryname}" />
+						</option>
+					</c:forEach>
+
+			</select>
+			</td>
+			<td>ChildCategory:
+				<div id="childcatloader" style="display: none">
+					<img src="<%=request.getContextPath()%>/images/ajax-loader.gif">
+				</div> <select id="childcat" multiple="multiple">
+					<option selected="selected" value="-1">--Please Select--</option>
+			</select>
+			</td>
+
+			<td>State <select id="states">
+					<option value="-1">--Please Select--</option>
+					<c:forEach items="${statelist}" var="state">
+						<option value="${state.id}"><c:out
+								value="${state.name}" /></option>
+					</c:forEach>
+
+			</select>
+
+			</td>
+
+			<td>City
+				<div id="citiesloader" style="display: none">
+					<img src="<%=request.getContextPath()%>/images/ajax-loader.gif">
+				</div> <select id="cities" multiple="multiple">
+					<option value="-1" selected="selected">--Please Select--</option>
+					<!-- <option value="5">New Delhi</option>
+						<option value="6">Patna</option>-->
+			</select>
+			</td>
+
+		</tr>
+		<tr>
+			<td colspan="4" align="center"><input class="filterbutton" type="button" value="Submit" /></td>
+		</tr>
+	</table>
 	
 
 	

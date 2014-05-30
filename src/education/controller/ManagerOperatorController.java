@@ -1,6 +1,7 @@
 package education.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,9 +29,26 @@ public class ManagerOperatorController {
 		
 		System.out.println("Exit request for userinterface");
 	}
+	@RequestMapping(value="/categorylist",method=RequestMethod.POST)
+	public @ResponseBody void getChildCategories(@RequestParam(value="maincategory") Integer maincat,HttpServletResponse response,ModelMap map) 
+			throws IOException {
+		System.out.println("Entered child categories listing");
+		System.out.println("maincategory entered=>"+maincat);
+		
+		instservice.getChildCategories(maincat,map);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		response.setContentType("application/json");
+		mapper.writeValue(response.getWriter() , map);
+		
+		System.out.println("Exit child categories listing");
+	}
+	
+	
 	
 	@RequestMapping(value="/details",method=RequestMethod.GET)
-	public @ResponseBody void getInstituteDetails(@RequestParam(value="instid") Integer instituteid,ModelMap map,HttpServletResponse response){
+	public @ResponseBody void getInstituteDetails(@RequestParam(value="instid") Integer instituteid,
+			ModelMap map,HttpServletResponse response) throws IOException{
 		System.out.println("entered institute details ajax method");
 		System.out.println("institute id=>"+instituteid);
 		ObjectMapper mapper = new ObjectMapper();
@@ -38,12 +56,9 @@ public class ManagerOperatorController {
 		instservice.getDetails(instituteid,map);
 		
 		response.setContentType("application/json");
-		try {
-			mapper.writeValue(response.getWriter(), map);
-		}
-		catch (IOException ioex){
-			System.out.println("==>>"+ioex.getMessage());
-		}
+		
+		mapper.writeValue(response.getWriter(), map);
+		
 		System.out.println("map size=>"+map.size());
 		System.out.println("exit institute details ajax method");
 	}

@@ -22,12 +22,12 @@ function getResultCity(pageno) {
 
 	$.ajax({
 		url:'/WebAdmin/citylist.do',
-		type:"POST",
+		type:"GET",
 		async:true,
 		dataType:'json',
 		data:"stateid="+selectedstate+'&currentpage='+currentpage,
 		success:function(response) {
-			//alert('i got the response=>'+response);
+			alert('i got the response=>'+response);
 			$("#citieslist").empty();
 			$("#ajax_loader").hide();
 			var citiescounthtml = "<p align='center'>Total Records Found:&nbsp;&nbsp;"+response.cities.count+'</p><br/>';

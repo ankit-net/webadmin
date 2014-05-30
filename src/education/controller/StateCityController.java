@@ -23,7 +23,7 @@ public class StateCityController {
 	@Autowired
 	private AdministratorService service;
 	
-	@RequestMapping(value="/citylist.do",method=RequestMethod.POST)
+	@RequestMapping(value="/citylist.do",method=RequestMethod.GET)
 	public @ResponseBody void citylisting(@RequestParam("stateid") int stateid,@RequestParam("currentpage") int currentpage
 			,HttpServletRequest request,HttpServletResponse response){
 		System.out.println("Entered citylisting"); 

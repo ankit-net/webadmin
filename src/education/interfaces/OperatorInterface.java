@@ -3,8 +3,8 @@
  */
 package education.interfaces;
 
+import java.util.HashMap;
 import java.util.List;
-
 import org.hibernate.Session;
 
 /**
@@ -20,6 +20,9 @@ public interface OperatorInterface {
 	List showInstitutes(Session session,int pageno,int recordperpage);
 	
 	int countInstitutes(Session session);
+	
+	List showInstitutes_Filter(Session session,HashMap<String, Object> parameters);
+	
 	
 	List showparentcategories(Session session);
 	
