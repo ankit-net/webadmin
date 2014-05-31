@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="INSTITUTE_COURSE_CATEGORY")
+@Table(name="institute_course_category")
 public class Institute_Course_Category {
 	
 	private PK_Institute_Course_Category pk;

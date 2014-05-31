@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -49,6 +51,19 @@ public class InstituteListingService {
 		session.close();
 		System.out.println("exit service method");
 	}
+	public void getInstituteListingDynamic(ModelMap map,Map<String, Object> parameters){
+		System.out.println("entered service method");
+		Session session = factory.openSession();
+		OperatorImplementation optimpl = new OperatorImplementation();
+		
+		
+		List institutes = optimpl.showInstitutes_Filter(session, parameters); 
+		
+		map.addAttribute("institutes", institutes);
+		session.close();
+		System.out.println("exit service method");
+	}
+	
 	
 	public void getDetails(Integer instituteid,ModelMap map){
 		System.out.println("entered service method");
@@ -99,4 +114,6 @@ public class InstituteListingService {
 		
 		System.out.println("exit getcitiesdynamic service");
 	}
+
+	
 }

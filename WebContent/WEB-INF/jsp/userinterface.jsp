@@ -79,7 +79,8 @@
 	</div>
 	<br/>
 	<br/>
-	<table border="1">
+	<p align="center" id="ajax" style="display: none;"><img alt="" src="<%=request.getContextPath()%>/images/ajax-loader.gif"></p>
+	<table border="1" id="listing">
 		<tr>
 			<td align="center"  colspan="7">Total Institutes Found: <c:out value="${count}"/> </td>
 		</tr>

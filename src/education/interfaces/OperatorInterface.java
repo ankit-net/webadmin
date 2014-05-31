@@ -5,6 +5,8 @@ package education.interfaces;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.hibernate.Session;
 
 /**
@@ -21,7 +23,7 @@ public interface OperatorInterface {
 	
 	int countInstitutes(Session session);
 	
-	List showInstitutes_Filter(Session session,HashMap<String, Object> parameters);
+	List showInstitutes_Filter(Session session,Map<String, Object> parameters);
 		
 	List showparentcategories(Session session);
 	

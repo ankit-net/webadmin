@@ -1,41 +1,6 @@
 $(document).ready(function(){
 	$(".filterbutton").click(function() {
-		alert("hi");
-		var maincategory = $("#maincat").val();
-		var childcategory = $("#childcat").val();
-		var state = $("#states").val();
-		var cities = $("#cities").val();		
-		var cp =  $("#currentpage").val();
-		$.ajax({
-			url: '/WebAdmin/filterInstitute.do',
-			type: "POST",
-			async:true,
-			dataType:'json',
-			data: "maincategory="+maincategory+"&childcategory="+childcategory+"&states="+state+"&cities="+cities+"&currentpage="+cp,
-			beforeSend:function(){
-				$("#listing").hide();
-				$("#ajax").show();
-			},
-			success:function(response){
-				alert('i got the response');
-				$("#ajax").hide();
-				$("#listing").empty();
-				var listingajax = "<tr><td width='30' class='tableheader'>Id </td><td width='166' class='tableheader'>Institute Name</td><td width='110' class='tableheader'>Institute type </td><td width='166' class='tableheader'>Location</td><td width='97' class='tableheader'>Verified By </td><td width='97' class='tableheader'>Created By</td><td width='97' class='tableheader'>Expand</td></tr>";
-				var instajax =  response.institutelist;
-				alert(instajax.length);
-				for(var i=0;i < instajax.length;i++){
-					listingajax += "<tr><td class='tabledata'>"+instajax[i].id+"</td>";
-					listingajax += "<td class='tabledata'>"+instajax[i].name+"</td>";
-					listingajax += "<td class='tabledata'>"+instajax[i].type+"</td>";
-					listingajax += "<td class='tabledata'>"+instajax[i].country+",&nbsp;"+instajax[i].state+",&nbsp;"+instajax[i].city+"</td>";
-					listingajax += "<td class='tabledata'>"+instajax[i].verifiedby+"</td>";
-					listingajax += "<td class='tabledata'>"+instajax[i].createdby+"</td>";
-					listingajax += "<td class='tabledata'><button id='detailbutton' value="+instajax[i].id+">Click Here</button></td>";
-				}
-				$(listingajax).appendTo("#listing");
-				$("#listing").show();
-			}
-		});
+		filterInstitutes(1);
 	});
 
 	$("#maincat").change(function(){
@@ -98,3 +63,44 @@ $(document).ready(function(){
 		});
 	});
 });
+
+function filterInstitutes(pageno){
+	alert("hi");
+	var maincategory = $("#maincat").val();
+	var childcategory = $("#childcat").val();
+	var state = $("#states").val();
+	var cities = $("#cities").val();		
+	var cp =  pageno;
+	$.ajax({			
+		url: '/WebAdmin/filterInstitute.do',
+		type: "GET",
+		async:true,
+		dataType:'json',
+		data: "maincategory="+maincategory+"&childcategory="+childcategory+"&states="+state+"&cities="+cities+"&cp="+cp,
+		beforeSend:function(){
+			$("#listing").hide();
+			$("#ajax").show();
+		},
+		success:function(response){
+			alert('i got the response');
+			$("#ajax").hide();
+			$("#listing").empty();
+			var listingajax = "<tr><td width='30' class='tableheader'>Id </td><td width='166' class='tableheader'>Institute Name</td><td width='110' class='tableheader'>Institute type </td><td width='166' class='tableheader'>Location</td><td width='97' class='tableheader'>Verified By </td><td width='97' class='tableheader'>Created By</td><td width='97' class='tableheader'>Expand</td></tr>";
+			var instajax =  response.institutes;
+			alert(instajax.length);
+			for(var i=0;i < instajax.length;i++){
+				listingajax += "<tr><td class='tabledata'>"+instajax[i].id+"</td>";
+				listingajax += "<td class='tabledata'>"+instajax[i].name+"</td>";
+				listingajax += "<td class='tabledata'>"+instajax[i].type+"</td>";
+				listingajax += "<td class='tabledata'>"+instajax[i].country+",&nbsp;"+instajax[i].state+",&nbsp;"+instajax[i].city+"</td>";
+				listingajax += "<td class='tabledata'>"+instajax[i].verifiedby+"</td>";
+				listingajax += "<td class='tabledata'>"+instajax[i].createdby+"</td>";
+				listingajax += "<td class='tabledata'><button id='detailbutton' value="+instajax[i].id+">Click Here</button></td>";
+			}
+			
+			$("#listing").html(listingajax);
+			
+			$("#listing").show();
+		}
+	});
+}

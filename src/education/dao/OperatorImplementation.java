@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Query;
@@ -75,15 +76,15 @@ public class OperatorImplementation implements OperatorInterface{
 	}
 	
 	@Override
-	public List showInstitutes_Filter(Session session,
-			HashMap<String, Object> parameters) {
+	public List showInstitutes_Filter(Session session,Map<String, Object> parameters) {
 		// TODO Auto-generated method stub
 		System.out.println("Entered filter institutes dao");
+		System.out.println("maincat=>"+parameters.get("maincategory")+"\tchildcat=>"+parameters.get("childcategories")+"\tstates=>"+parameters.get("stateid")+"\tcities=>"+parameters.get("cities")+"\tcp=>"+parameters.get("currentpage"));
 		Integer maincategory = (Integer) parameters.get("maincategory");
-		Integer[] childcategories = (Integer[]) parameters.get("childcategory");
-		Integer stateid = (Integer) parameters.get("statesid");
-		Integer[] cities = (Integer[]) parameters.get("citiesid");
-		Integer rowsperpage = (Integer) parameters.get("rowperpage");
+		Integer[] childcategories = (Integer[]) parameters.get("childcategories");
+		Integer stateid = (Integer) parameters.get("stateid");
+		Integer[] cities = (Integer[]) parameters.get("cities");
+		Integer rowsperpage = 10;
 		Integer currentpage = (Integer) parameters.get("currentpage");
 		
 		
@@ -146,7 +147,7 @@ public class OperatorImplementation implements OperatorInterface{
 					institutes_filter.append(" ,Institute_Course_Category icc where icc.pk.institute_id.id = inst.id AND icc.pk.category_id IN (:categories) ");
 				}
 			}
-			if(cities[0] != -1){
+			/*if(cities[0] != -1){
 				//some city had been selected
 				institutes_filter.append(" inst.city_id.id IN (:cities) ");
 				
@@ -154,11 +155,11 @@ public class OperatorImplementation implements OperatorInterface{
 			else {
 				//no city had been selected
 				
-			}
+			}*/
 			if(stateid != -1){
 				//some state had been selected
 				if(cities[0] != -1){
-					institutes_filter.append(" AND inst.state_id.id = :states");
+					institutes_filter.append(" AND inst.state_id.id = :states AND inst.city_id.id IN (:cities)");
 				}
 				else if(allcategories[0] != 0) {
 					institutes_filter.append(" AND inst.state_id.id = :states");
@@ -180,7 +181,7 @@ public class OperatorImplementation implements OperatorInterface{
 		Query query = session.createQuery(institutes_filter.toString());
 		
 		if(cities[0] != -1){
-			query.setParameterList("child", cities);
+			query.setParameterList("cities", cities);
 		}
 		if(maincategory != -1){
 			Set<Integer> categories_set = new HashSet<Integer>();
@@ -217,7 +218,7 @@ public class OperatorImplementation implements OperatorInterface{
 		
 		
 		System.out.println("Exit filter institutes dao");
-		return null;
+		return institutecollection;
 	}
 	
 	
