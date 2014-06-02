@@ -86,21 +86,24 @@ function filterInstitutes(pageno){
 			$("#ajax").hide();
 			$("#listing").empty();
 			var listingajax = "<tr><td width='30' class='tableheader'>Id </td><td width='166' class='tableheader'>Institute Name</td><td width='110' class='tableheader'>Institute type </td><td width='166' class='tableheader'>Location</td><td width='97' class='tableheader'>Verified By </td><td width='97' class='tableheader'>Created By</td><td width='97' class='tableheader'>Expand</td></tr>";
+			var countajax = "<tr><td align='center' colspan='7'>Total Institutes Found: "+response.count+"</td></tr>";
 			var instajax =  response.institutes;
 			alert(instajax.length);
+			var allajax = countajax + listingajax;
 			for(var i=0;i < instajax.length;i++){
-				listingajax += "<tr><td class='tabledata'>"+instajax[i].id+"</td>";
-				listingajax += "<td class='tabledata'>"+instajax[i].name+"</td>";
-				listingajax += "<td class='tabledata'>"+instajax[i].type+"</td>";
-				listingajax += "<td class='tabledata'>"+instajax[i].country+",&nbsp;"+instajax[i].state+",&nbsp;"+instajax[i].city+"</td>";
-				listingajax += "<td class='tabledata'>"+instajax[i].verifiedby+"</td>";
-				listingajax += "<td class='tabledata'>"+instajax[i].createdby+"</td>";
-				listingajax += "<td class='tabledata'><button id='detailbutton' value="+instajax[i].id+">Click Here</button></td>";
+				allajax += "<tr><td class='tabledata'>"+instajax[i].id+"</td>";
+				allajax += "<td class='tabledata'>"+instajax[i].name+"</td>";
+				allajax += "<td class='tabledata'>"+instajax[i].type+"</td>";
+				allajax += "<td class='tabledata'>"+instajax[i].country+",&nbsp;"+instajax[i].state+",&nbsp;"+instajax[i].city+"</td>";
+				allajax += "<td class='tabledata'>"+instajax[i].verifiedby+"</td>";
+				allajax += "<td class='tabledata'>"+instajax[i].createdby+"</td>";
+				allajax += "<td class='tabledata'><button id='detailbutton' value="+instajax[i].id+">Click Here</button></td>";
 			}
 			
-			$("#listing").html(listingajax);
+			$("#listing").html(allajax);
 			
 			$("#listing").show();
 		}
 	});
 }
+

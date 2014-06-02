@@ -59,6 +59,10 @@ public class InstituteListingService {
 		
 		List institutes = optimpl.showInstitutes_Filter(session, parameters); 
 		
+		map.addAttribute("count", institutes.get(0));
+		
+		
+		institutes.remove(0);
 		map.addAttribute("institutes", institutes);
 		session.close();
 		System.out.println("exit service method");

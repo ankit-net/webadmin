@@ -90,7 +90,7 @@ public class OperatorImplementation implements OperatorInterface{
 		
 		StringBuilder institutes_filter = new StringBuilder("SELECT DISTINCT inst.id as institute_id, inst.member_id.name as institute_name, inst.instype.name as institute_type, inst.city_id.name as city, inst.state_id.name as state , inst.country_id.name as country, inst.created_by_id.username as createdby,inst.created_date FROM Institute inst WHERE ");
 		
-		
+		StringBuilder count_filter = new StringBuilder("SELECT COUNT(DISTINCT inst.id) FROM Institute inst WHERE ");
 	//	Query query = session.createQuery("SELECT inst.id, inst.member_id.name, inst.institute_type, inst.city_id.name, inst.state_id.name , inst.country_id.name , inst.created_by_id.username , inst.verified_by_id.username FROM Institute inst WHERE inst.state_id.id = :states AND inst.city_id.id IN (:cities) ORDER BY inst.member_id.name ");
 	//	query.setParameter("states", statesid);
 	//	query.setParameterList("cities", citiesid); 
@@ -116,6 +116,7 @@ public class OperatorImplementation implements OperatorInterface{
 			//this means no filter had been selected
 			System.out.println("no filter had been selected");
 			institutes_filter.replace(institutes_filter.length() -7, institutes_filter.length(), "");
+			count_filter.replace(count_filter.length() - 7, count_filter.length(), "");
 		}
 		else {
 			
@@ -128,7 +129,7 @@ public class OperatorImplementation implements OperatorInterface{
 				//some main category had been selected
 				institutes_filter.replace(institutes_filter.length() - 7, institutes_filter.length(), "");
 				
-				
+				count_filter.replace(count_filter.length() - 7, count_filter.length(), "");
 				
 				if(childcategories[0] != -1){
 					//some child category also been selected
@@ -138,6 +139,8 @@ public class OperatorImplementation implements OperatorInterface{
 					allcategories[childcategories.length] = maincategory; 
 					
 					institutes_filter.append(" ,Institute_Course_Category icc where icc.pk.institute_id.id = inst.id AND icc.pk.category_id IN (:categories) ");
+					
+					count_filter.append(" ,Institute_Course_Category icc where icc.pk.institute_id.id = inst.id AND icc.pk.category_id IN (:categories) ");
 				}
 				else {
 					//only main category is being selected
@@ -145,6 +148,8 @@ public class OperatorImplementation implements OperatorInterface{
 							
 					//querybuilder.replace(querybuilder.length() -7, querybuilder.length(), "");
 					institutes_filter.append(" ,Institute_Course_Category icc where icc.pk.institute_id.id = inst.id AND icc.pk.category_id IN (:categories) ");
+					
+					count_filter.append(" ,Institute_Course_Category icc where icc.pk.institute_id.id = inst.id AND icc.pk.category_id IN (:categories) ");
 				}
 			}
 			/*if(cities[0] != -1){
@@ -160,12 +165,18 @@ public class OperatorImplementation implements OperatorInterface{
 				//some state had been selected
 				if(cities[0] != -1){
 					institutes_filter.append(" AND inst.state_id.id = :states AND inst.city_id.id IN (:cities)");
+					
+					count_filter.append(" AND inst.state_id.id = :states AND inst.city_id.id IN (:cities)");
 				}
 				else if(allcategories[0] != 0) {
 					institutes_filter.append(" AND inst.state_id.id = :states");
+					
+					count_filter.append(" AND inst.state_id.id = :states");
 				}
 				else {
 					institutes_filter.append(" inst.state_id.id = :states");
+					
+					count_filter.append(" inst.state_id.id = :states");
 				}
 				
 			}
@@ -175,13 +186,18 @@ public class OperatorImplementation implements OperatorInterface{
 		}
 		
 		institutes_filter.append(" ORDER BY inst.member_id.name ");
-		
+		count_filter.append(" ORDER BY inst.member_id.name ");
 		
 		System.out.println("query exceute for filters=>"+institutes_filter.toString());
+		
+		System.out.println();
 		Query query = session.createQuery(institutes_filter.toString());
 		
+		Query query_count = session.createQuery(count_filter.toString());
 		if(cities[0] != -1){
 			query.setParameterList("cities", cities);
+			
+			query_count.setParameterList("cities", cities);
 		}
 		if(maincategory != -1){
 			Set<Integer> categories_set = new HashSet<Integer>();
@@ -190,9 +206,13 @@ public class OperatorImplementation implements OperatorInterface{
 			}
 			
 			query.setParameterList("categories",categories_set);
+			
+			query_count.setParameterList("categories",categories_set);
 		}
 		if(stateid != -1){
 			query.setParameter("states", stateid);
+			
+			query_count.setParameter("states", stateid);
 		}
 		
 		query.setFirstResult(startrow);
@@ -216,8 +236,12 @@ public class OperatorImplementation implements OperatorInterface{
 		//query.setParameterList(arg0, arg1)
 		System.out.println("institutes_hql->"+institutes_hql.size());
 		
+		long totalcount = (long) query_count.list().get(0);
+		
+		System.out.println("total count for institutes filter=>"+totalcount);
 		
 		System.out.println("Exit filter institutes dao");
+		institutecollection.add(0, totalcount);
 		return institutecollection;
 	}
 	
