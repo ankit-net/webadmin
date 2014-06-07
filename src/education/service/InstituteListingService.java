@@ -1,6 +1,7 @@
 package education.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
+import education.bean.Institute;
+import education.bean.Member;
 import education.dao.AdminstratorImplementation;
 import education.dao.OperatorImplementation;
 import education.util.Commons;
@@ -32,21 +35,13 @@ public class InstituteListingService {
 		List maincat = operatorimpl.showparentcategories(session);
 		List states = adminimpl.showstates(session, 3);
 		
-		List statescollection = new ArrayList();
-		for(Iterator<Object> itr = states.iterator();itr.hasNext();){
-			Object[] currentstate = (Object[]) itr.next();
-			HashMap<String, Object> statesmap = new HashMap<String, Object>();
-			statesmap.put("id", currentstate[0]);
-			statesmap.put("name", currentstate[1]);
-			statesmap.put("isactive", currentstate[2]);
-			statesmap.put("createddate",Commons.changedateformat(currentstate[3]));	
-			statescollection.add(statesmap);
-		}
+		
+		
 		int count = operatorimpl.countInstitutes(session);
 		map.addAttribute("institutes", institutelist);
 		map.addAttribute("count", count);
 		map.addAttribute("maincategories", maincat);
-		map.addAttribute("statelist", statescollection);
+		map.addAttribute("statelist", states);
 		
 		session.close();
 		System.out.println("exit service method");
@@ -119,5 +114,38 @@ public class InstituteListingService {
 		System.out.println("exit getcitiesdynamic service");
 	}
 
-	
+	public void getInstituteAddForm(ModelMap map) {
+		System.out.println("entered institute get addform");
+		Session session = factory.openSession();
+		AdminstratorImplementation adminimpl = new AdminstratorImplementation();
+		
+		
+		map.addAttribute("insttypes", adminimpl.showInstitutetypes(session, -1, -1));
+		map.addAttribute("usertypes", adminimpl.showusertypes(session, -1, -1));
+		map.addAttribute("states", adminimpl.showstates(session, 3));
+		
+		int currentyear =	Calendar.getInstance().get(Calendar.YEAR);
+		List<Integer> years = new ArrayList<Integer>();
+		for(int i= currentyear; i >= 1900; i--){
+			years.add(i);
+		}
+		map.addAttribute("totalyears", years);
+		
+		session.close();
+	}
+
+	public void submitInstituteAddForm(Institute inst,Member mem){
+		System.out.println("entered submit institute addform service");
+		Session session = factory.openSession();
+		
+		
+		
+		OperatorImplementation optimpl = new OperatorImplementation();
+		optimpl.addInstitute(session, inst, mem);
+		
+		session.close();
+		
+		System.out.println("exit submit institute addform service");
+	}
+
 }

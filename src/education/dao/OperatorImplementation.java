@@ -10,16 +10,51 @@ import java.util.Set;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
+import education.bean.Institute;
+import education.bean.Member;
 import education.interfaces.OperatorInterface;
 import education.util.Commons;
 
 public class OperatorImplementation implements OperatorInterface{
 
 	@Override
-	public void addInstitute() {
+	public void addInstitute(Session session,Institute inst,Member member) {
 		// TODO Auto-generated method stub
+		 System.out.println("entered addinstitute dao");
 		 
+		 
+		 /*
+		  * Selecting max id from member table
+		  */
+		 String hql_maxid_member  = "select max(id) from Member";
+		 Query query = session.createQuery(hql_maxid_member);
+		 int memberid  = Integer.parseInt(query.uniqueResult().toString()) + 1;
+
+		 
+		 System.out.println("next memberid is =>"+memberid);
+		 
+		 
+		 /*
+		  * Exceuting Insert Query for Member Table
+		  */
+		 member.setId(memberid);
+		 Transaction tx  = session.beginTransaction();
+		 session.save(member);
+		 tx.commit();
+		 tx = null;
+
+		 inst.setMember_id(member);
+		 
+		 /*
+		  * Executing Insert Query for Institute Table
+		  */
+		 tx = session.beginTransaction();
+		 session.save(inst);
+		 tx.commit();
+		 
+		 System.out.println("exit addinstitute dao");
 	}
 
 	@Override

@@ -1,11 +1,13 @@
 package education.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import education.bean.AdminUser;
+import education.bean.City;
+import education.bean.Country;
+import education.bean.Institute;
+import education.bean.Institute_Type;
+import education.bean.Member;
+import education.bean.State;
+import education.bean.UserType;
 import education.service.InstituteListingService;
 
 @Controller
@@ -68,8 +78,16 @@ public class ManagerOperatorController {
 		System.out.println("exit institute details ajax method");
 	}
 	
-	/*
+	/**
 	 * This Controller called when user clicks on Submit Button after selecting various filters.
+	 * @param maincat
+	 * @param childcate
+	 * @param stateid
+	 * @param cities
+	 * @param currentpage
+	 * @param request
+	 * @param response
+	 * @param modelMap
 	 */
 	@RequestMapping(value="/filterInstitute",method=RequestMethod.GET)
 	public @ResponseBody void filterController(
@@ -78,8 +96,9 @@ public class ManagerOperatorController {
 			@RequestParam(value="states") Integer stateid,
 			@RequestParam(value="cities") Integer[] cities,
 			@RequestParam(value="cp") Integer currentpage,
-			
-			HttpServletRequest request,HttpServletResponse response, ModelMap modelMap){
+			HttpServletRequest request,
+			HttpServletResponse response, 
+			ModelMap modelMap){
 		System.out.println("Entered filter Institutes");
 		//System.out.println(request.getParameterMap().toString());
 		System.out.println(maincat+"\t"+childcate+"\t"+stateid+"\t"+cities+"\t"+currentpage);
@@ -107,4 +126,86 @@ public class ManagerOperatorController {
 		
 	}
 	
+	
+	@RequestMapping(value="/addinstitute",method=RequestMethod.GET)
+	public String getAddForm(ModelMap map){
+		System.out.println("entered getaddForm controller");
+		
+		instservice.getInstituteAddForm(map);
+		
+		System.out.println("exit getaddform controller");
+		return "admin/addinst";
+	}
+	
+	@RequestMapping(value="/addinstitute",method=RequestMethod.POST)
+	public String submitAddForm(HttpServletRequest req){
+		System.out.println("entered submitadd form");
+		String usertype = req.getParameter("usertype");
+		String email = req.getParameter("email");
+		String institutename = req.getParameter("name");
+		String rating = req.getParameter("rating");
+		String phone = req.getParameter("phone");
+		String insttype = req.getParameter("institutetype");
+		String year  = req.getParameter("year");
+		String about = req.getParameter("about");
+		String state = req.getParameter("allstates");
+		String city= req.getParameter("allcitieslist");
+		HttpSession session = req.getSession(false);
+		
+		if(session != null && session.getAttribute("userid") != null){
+			String userid =  session.getAttribute("userid").toString();
+			
+			System.out.println("userid=>"+userid);
+			
+			Institute_Type typebean = new Institute_Type();
+			typebean.setId(Integer.parseInt(insttype));
+			
+			State stbean = new State();
+			stbean.setId(Integer.parseInt(state));
+			
+			City citybean = new City();
+			citybean.setId(Integer.parseInt(city));
+			
+			Country ctbean = new Country();
+			ctbean.setId(3);
+			
+			AdminUser userbean = new AdminUser();
+			userbean.setId(Integer.parseInt(userid));
+			
+			Institute instbean = new Institute();
+			instbean.setJosh_rating(rating);
+			instbean.setInstype(typebean);
+			instbean.setYearoffrom(Integer.parseInt(year));
+			instbean.setAbout(about);
+			instbean.setState_id(stbean);
+			instbean.setCity_id(citybean);
+			instbean.setCountry_id(ctbean);
+			instbean.setCreated_date(new Date());
+			instbean.setCreated_by_id(userbean);
+			
+			UserType utbean = new UserType();
+			utbean.setId(Integer.parseInt(usertype));
+			
+			Member memberbean = new Member();
+			memberbean.setUser_type_id(utbean);
+			memberbean.setEmail(email);
+			memberbean.setName(institutename);
+			memberbean.setPhone(phone);
+			memberbean.setCreated_date(new Date());
+		
+			instservice.submitInstituteAddForm(instbean,memberbean);
+			
+			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("usertype=>"+usertype+"\temail=>"+email+"\tinstitutename=>"+institutename+"\trating=>"+rating);
+			System.out.print("phone=>"+phone+"\tinsttype=>"+insttype+"\tyear=>"+year+"\tabout=>"+about+"\tstate=>"+state+"\tcity=>"+city);
+					
+			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("exit submit add form");
+			return "redirect:/userinterface.do";
+		}
+		else {
+			return "redirect:/login.do";
+		}
+		
+	}
 }

@@ -3,11 +3,11 @@
  */
 package education.interfaces;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.Session;
+import education.bean.Institute;
+import education.bean.Member;
 
 /**
  * @author Ankit
@@ -15,7 +15,7 @@ import org.hibernate.Session;
  */
 public interface OperatorInterface {
 	
-	void addInstitute();
+	void addInstitute(Session session,Institute inst,Member member);
 	
 	void editInstitute();
 

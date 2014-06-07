@@ -18,8 +18,7 @@
 			<td>MainCategory: <select id="maincat">
 					<option value="-1">--Please Select--</option>
 					<c:forEach items="${maincategories}" var="cat">
-						<option value="${cat.id}"><c:out value="${cat.categoryname}" />
-						</option>
+						<option value="${cat.id}"><c:out value="${cat.categoryname}" /></option>
 					</c:forEach>
 
 			</select>

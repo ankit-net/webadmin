@@ -46,6 +46,8 @@ public class UserType {
 	public void setIs_active(int is_active) {
 		this.is_active = is_active;
 	}
+	@ManyToOne
+	@JoinColumn(name="created_by_id",referencedColumnName="id")
 	public AdminUser getCreated_by_id() {
 		return created_by_id;
 	}

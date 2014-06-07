@@ -19,7 +19,13 @@ public interface AdministratorInterface extends PropertiesInterface {
 
 	int countusers(Session session);
 	
+	List showusertypes(Session session,int pageno,int recordperPage);
 	
+	int countusertypes(Session session);
+	
+	List showInstitutetypes(Session session,int pageno,int recordperPage);
+	
+	int countInstitutetypes(Session session);
 	
 	
 }

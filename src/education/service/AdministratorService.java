@@ -35,7 +35,7 @@ public class AdministratorService {
 		Session session =  factory.openSession();
 		AdminstratorImplementation adminmpl = new AdminstratorImplementation();
 		int userscount = adminmpl.countusers(session);
-		List<Object> states = adminmpl.showstates(session, 3); 
+		List states = adminmpl.showstates(session, 3); 
 		List<Object> userslist =  adminmpl.showusers(session,currentPage,recordPerPage);
 		HashMap<String, Object> mapforpagination = Commons.addPagination(currentPage, userscount, recordPerPage);
 
@@ -45,7 +45,7 @@ public class AdministratorService {
 		
 		List<Object> userscollection  = new ArrayList<Object>();
 		
-		List<Object> statescollection  = new ArrayList<Object>();
+		
 		
 		for(Iterator<Object> itr = userslist.iterator();itr.hasNext();){
 			Object[] currentuser = (Object[]) itr.next();
@@ -63,18 +63,9 @@ public class AdministratorService {
 		
 		
 		
-		for(Iterator<Object> itr = states.iterator();itr.hasNext();){
-			Object[] currentstate = (Object[]) itr.next();
-			HashMap<String, Object> statesmap = new HashMap<String, Object>();
-			statesmap.put("id", currentstate[0]);
-			statesmap.put("name", currentstate[1]);
-			statesmap.put("isactive", currentstate[2]);
-			statesmap.put("createddate",Commons.changedateformat(currentstate[3]));	
-			statescollection.add(statesmap);
-		}
 		map.addAttribute("users", userscollection);
 		map.addAttribute("countusers", userscount);
-		map.addAttribute("states", statescollection);
+		map.addAttribute("states", states);
 		session.close();
 		System.out.println("Exit Admin Service");
 		return map;
@@ -127,26 +118,16 @@ public class AdministratorService {
 	
 	public HashMap<String, Object> getcities(int stateid,int currentpage){
 		HashMap<String, Object> citiesmapjson = new HashMap<String, Object>();
-		ArrayList<Object> citylisting = new ArrayList<Object>();
+		
 		System.out.println("Entered getcities service");
 		Session session = factory.openSession();
 		AdminstratorImplementation adminimpl = new AdminstratorImplementation();
-		List<Object> citieslist = adminimpl.showcities(session, stateid, 3,currentpage,recordPerPage );
+		List citieslist = adminimpl.showcities(session, stateid, 3,currentpage,recordPerPage );
 		HashMap<String, Object> paginationmap = null;
-		for(Iterator itr = citieslist.iterator();itr.hasNext();){
-			Object[] citiesdetails = (Object[]) itr.next();
-			HashMap<String, Object> citymap = new HashMap<String, Object>();
-			citymap.put("id", citiesdetails[0]);
-			citymap.put("name", citiesdetails[1]);
-			citymap.put("isactive", citiesdetails[2]);
-			
-			
-			citymap.put("createddate", Commons.changedateformat(citiesdetails[3]));
-			citylisting.add(citymap);
-		}
+		
 		int countcities  = adminimpl.countcities(session, stateid, 3);
 		
-		citiesmapjson.put("citieslists", citylisting);
+		citiesmapjson.put("citieslists", citieslist);
 		citiesmapjson.put("count", countcities);
 		paginationmap = Commons.addPagination(currentpage, countcities, recordPerPage);
 		citiesmapjson.put("totalpages", paginationmap.get("totalpage"));

@@ -17,7 +17,9 @@ public class Institute {
 	private int id;
 	private Member member_id;
 	private int yearoffrom;
-	private Institute_Type instype; 
+	private String josh_rating;
+	private Institute_Type instype;
+	private String about;
 	private City city_id;
 	private State state_id;
 	private Country country_id;
@@ -47,7 +49,12 @@ public class Institute {
 	public void setYearoffrom(int yearoffrom) {
 		this.yearoffrom = yearoffrom;
 	}
-	
+	public String getJosh_rating() {
+		return josh_rating;
+	}
+	public void setJosh_rating(String josh_rating) {
+		this.josh_rating = josh_rating;
+	}
 	@ManyToOne
 	@JoinColumn(name="institute_type",referencedColumnName="id")
 	public Institute_Type getInstype() {
@@ -56,7 +63,12 @@ public class Institute {
 	public void setInstype(Institute_Type instype) {
 		this.instype = instype;
 	}
-	
+	public String getAbout() {
+		return about;
+	}
+	public void setAbout(String about) {
+		this.about = about;
+	}
 	@ManyToOne
 	@JoinColumn(name="city_id",referencedColumnName="id")
 	public City getCity_id() {

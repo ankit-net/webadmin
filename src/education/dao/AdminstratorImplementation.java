@@ -1,7 +1,9 @@
 package education.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -14,6 +16,7 @@ import education.bean.AdminUser;
 import education.bean.Country;
 import education.bean.State;
 import education.interfaces.AdministratorInterface;
+import education.util.Commons;
 
 
 
@@ -226,9 +229,22 @@ public class AdminstratorImplementation implements AdministratorInterface{
 		query.setParameter(0, countryid);
 		
 		List states = query.list();
+		
+		List statescollection = new ArrayList();
+		
+		for(Iterator itr = states.iterator();itr.hasNext();){
+			HashMap<String, Object> statesmap = new HashMap<>();
+			Object[] stateobj = (Object[]) itr.next();
+			statesmap.put("id", stateobj[0]);
+			statesmap.put("name", stateobj[1]);
+			statesmap.put("isactive", stateobj[2]);
+			statesmap.put("createddate", stateobj[3]);
+			
+			statescollection.add(statesmap);
+		}
 
 		System.out.println("Exit show states");
-		return states;
+		return statescollection;
 	}
 	
 	@Override
@@ -253,6 +269,7 @@ public class AdminstratorImplementation implements AdministratorInterface{
 		System.out.println("Entered show cities dao");
 		System.out.println("stateid=>"+stateid+"\tcountry=>"+countryid);
 		List cities = null;
+		List citiescollection = new ArrayList();
 		String querycities = "select ci.id,ci.name,ci.isactive,ci.createddate from City ci where ci.country_id.id=? and ci.state_id.id=? order by ci.name";
 		Query query = session.createQuery(querycities);
 		query.setInteger(0, countryid);
@@ -267,8 +284,19 @@ public class AdminstratorImplementation implements AdministratorInterface{
 		
 		cities  = query.list();
 		
+		for(Iterator itr = cities.iterator();itr.hasNext();){
+			HashMap<String, Object> citiesmap = new HashMap<String,Object>();
+			Object[] cityobj = (Object[]) itr.next();
+			citiesmap.put("id", cityobj[0]);
+			citiesmap.put("name", cityobj[1]);
+			citiesmap.put("isactive", cityobj[2]);
+			citiesmap.put("createddate", Commons.changedateformat(cityobj[3]));
+			
+			citiescollection.add(citiesmap);
+					
+		}
 		System.out.println("Exit show cities dao");
-		return cities;
+		return citiescollection;
 	}
 
 	@Override
@@ -285,9 +313,87 @@ public class AdminstratorImplementation implements AdministratorInterface{
 		return count;
 	}
 	
+	@Override
+	public List showInstitutetypes(Session session, int pageno,int recordperPage) {
+		// TODO Auto-generated method stub
+		System.out.println("entered showinsitutetypes dao");
+		String query_show = "select id,name,isactive from Institute_Type";
+		Query query = session.createQuery(query_show);
+		List institutetypescollection = new ArrayList();
+		if (pageno != -1) {
+			query.setFirstResult((pageno - 1) * recordperPage);
+			query.setMaxResults(recordperPage);
+		}
+		
+		List institutetypes = query.list();
+		
+		for(Iterator itr = institutetypes.iterator();itr.hasNext();){
+			Object[] insttype = (Object[]) itr.next();
+			HashMap<String, Object> insttypemap = new HashMap<String,Object>();
+			
+			insttypemap.put("id", insttype[0]);
+			insttypemap.put("name", insttype[1]);
+			insttypemap.put("is_active", insttype[2]);
+			institutetypescollection.add(insttypemap);
+		}
+		
+		System.out.println("exit showinstitutetypes dao");
+		return institutetypescollection;
+	}
 	
+	@Override
+	public int countInstitutetypes(Session session) {
+		// TODO Auto-generated method stub
+		System.out.println("entered countinstitutestypes dao");
+		String countquery = "select count(*) from Institute_Type";
+		Query query = session.createQuery(countquery);
+		
+		int count = Integer.parseInt(query.uniqueResult().toString());
 
+		System.out.println("exit countinstitutetypes dao");
+		return count;
+	}
 
+	@Override
+	public List showusertypes(Session session, int pageno, int recordperPage) {
+		// TODO Auto-generated method stub
+		System.out.println("entered showusertypes");
+		String query_usertype = "select id,name,is_active,created_by_id.username from UserType";
+		Query query = session.createQuery(query_usertype);
+		List usertypescollection = new ArrayList();
+		if(pageno != -1){
+			query.setFirstResult((pageno - 1) * recordperPage);
+			query.setMaxResults(recordperPage);			
+		}
+		List usertypeslist = query.list();
+		for(Iterator itr = usertypeslist.iterator();itr.hasNext();){
+			HashMap<String, Object> usertypesmap = new HashMap<String,Object>();
+			Object[] usertypeobj = (Object[]) itr.next();
+			usertypesmap.put("id", usertypeobj[0]);
+			usertypesmap.put("name", usertypeobj[1]);
+			usertypesmap.put("is_active", usertypeobj[2]);
+			usertypesmap.put("username", usertypeobj[3]);
+			
+			usertypescollection.add(usertypesmap);
+			
+			
+		}
+		
+		System.out.println("exit showusertypes");
+		return usertypescollection;
+	}
+	
+	@Override
+	public int countusertypes(Session session) {
+		// TODO Auto-generated method stub
+		System.out.println("entered countusertypes dao");
+		String countquery = "select count(*) from UserType";
+		
+		Query query = session.createQuery(countquery);
+		int count = Integer.parseInt(query.uniqueResult().toString());
+		System.out.println("exit countusertypes dao");
+		return count;
+	}
 
 	
 }

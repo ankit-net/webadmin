@@ -1,5 +1,7 @@
 package education.bean;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -12,6 +14,9 @@ public class Member {
 	private UserType user_type_id;
 	private String name;
 	private int is_active;
+	private String email;
+	private String phone;
+	private Date created_date;
 	
 	@Id
 	public int getId() {
@@ -40,7 +45,25 @@ public class Member {
 	public void setIs_active(int is_active) {
 		this.is_active = is_active;
 	}
-
+	public String getEmail() {
+		return email;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public Date getCreated_date() {
+		return created_date;
+	}
+	public void setCreated_date(Date created_date) {
+		this.created_date = created_date;
+	}
 	
 	
 }
