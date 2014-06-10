@@ -30,11 +30,23 @@
 	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/SessionFactory.html -->
 	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/Session.html -->
 	<bean id="sessionFactory" 
-	class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
-				 p:dataSource-ref="dataSource"
-				 p:configLocation="${hibernate.config}"
-				 p:packagesToScan="education"/>
-	
+	class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+				 <property name="dataSource" ref="servdataSource"/>
+				 <property name="packagesToScan">
+				 	<list>
+				 		<value>education</value>
+				 	</list>
+				 	
+				 </property>
+				 <property name="hibernateProperties">
+				 	<props>
+				 		<prop key="hibernateProperties">org.hibernate.dialect.MySQLDialect</prop>
+				 		<prop key="show_sql">true</prop>
+				 	</props>
+				 
+				 </property>
+				
+</bean>
 	<!-- Declare a datasource that has pooling capabilities-->	 
 	
 	
@@ -52,7 +64,7 @@
 
 	
 -->
-<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+<bean id="servdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${app.jdbc.driverClassName}"/>
         <property name="url" value="${app.jdbc.url}"/>
         <property name="username" value="${app.jdbc.username}"/>
