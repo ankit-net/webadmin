@@ -11,7 +11,9 @@
    http://www.springframework.org/schema/context 
    http://www.springframework.org/schema/context/spring-context-3.0.xsd
    http://www.springframework.org/schema/mvc
-   http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+   http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+   http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 	 
 	<context:component-scan base-package="education" />
 	
@@ -23,14 +25,13 @@
    	 </bean>
    	   <!-- Load Hibernate related configuration -->
 	<context:property-placeholder location="/WEB-INF/spring.properties" />
-	
+	<context:annotation-config/>
 	
     <!-- Declare the Hibernate SessionFactory for retrieving Hibernate sessions -->
     <!-- See http://static.springsource.org/spring/docs/3.0.x/javadoc-api/org/springframework/orm/hibernate3/annotation/AnnotationSessionFactoryBean.html --> 							
 	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/SessionFactory.html -->
 	<!-- See http://docs.jboss.org/hibernate/stable/core/api/index.html?org/hibernate/Session.html -->
-	<bean id="sessionFactory" 
-	class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 				 <property name="dataSource" ref="servdataSource"/>
 				 <property name="packagesToScan">
 				 	<list>
@@ -40,31 +41,16 @@
 				 </property>
 				 <property name="hibernateProperties">
 				 	<props>
-				 		<prop key="hibernateProperties">org.hibernate.dialect.MySQLDialect</prop>
+				 		<prop key="dialect">org.hibernate.dialect.MySQLDialect</prop>
 				 		<prop key="show_sql">true</prop>
+				 		<prop key="connection.pool_size">2</prop>
 				 	</props>
 				 
 				 </property>
-				
-</bean>
-	<!-- Declare a datasource that has pooling capabilities-->	 
+					
+	</bean>
 	
-	
-	<!-- bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-				destroy-method="close"
-				p:driverClass="${app.jdbc.driverClassName}"
-				p:jdbcUrl="${app.jdbc.url}"
-				p:user="${app.jdbc.username}"
-				p:password="${app.jdbc.password}"
-				p:acquireIncrement="5"
-				p:idleConnectionTestPeriod="60"
-				p:maxPoolSize="2"
-				p:maxStatements="50"
-				p:minPoolSize="1" 
-
-	
--->
-<bean id="servdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<bean id="servdataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${app.jdbc.driverClassName}"/>
         <property name="url" value="${app.jdbc.url}"/>
         <property name="username" value="${app.jdbc.username}"/>

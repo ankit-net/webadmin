@@ -39,17 +39,18 @@ public class OperatorImplementation implements OperatorInterface{
 		 /*
 		  * Exceuting Insert Query for Member Table
 		  */
-		 member.setId(memberid);
+		 member.setId(0);
 		 Transaction tx  = session.beginTransaction();
 		 session.save(member);
 		 tx.commit();
 		 tx = null;
 
-		 inst.setMember_id(member);
+		 //inst.setMember_id(member);
 		 
 		 /*
 		  * Executing Insert Query for Institute Table
 		  */
+		 
 		 tx = session.beginTransaction();
 		 session.save(inst);
 		 tx.commit();

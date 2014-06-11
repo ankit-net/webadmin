@@ -12,6 +12,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 
 import education.bean.Institute;
@@ -134,16 +136,17 @@ public class InstituteListingService {
 		session.close();
 	}
 
+	
 	public void submitInstituteAddForm(Institute inst,Member mem){
 		System.out.println("entered submit institute addform service");
-		Session session = factory.openSession();
+		Session session = factory.getCurrentSession();   
 		
 		
 		
 		OperatorImplementation optimpl = new OperatorImplementation();
 		optimpl.addInstitute(session, inst, mem);
 		
-		session.close();
+		//session.close();
 		
 		System.out.println("exit submit institute addform service");
 	}
