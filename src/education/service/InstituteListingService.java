@@ -139,14 +139,14 @@ public class InstituteListingService {
 	
 	public void submitInstituteAddForm(Institute inst,Member mem){
 		System.out.println("entered submit institute addform service");
-		Session session = factory.getCurrentSession();   
+		Session session = factory.openSession();   
 		
 		
 		
 		OperatorImplementation optimpl = new OperatorImplementation();
 		optimpl.addInstitute(session, inst, mem);
 		
-		//session.close();
+		session.close();
 		
 		System.out.println("exit submit institute addform service");
 	}

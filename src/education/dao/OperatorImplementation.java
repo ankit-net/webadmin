@@ -31,30 +31,33 @@ public class OperatorImplementation implements OperatorInterface{
 		 String hql_maxid_member  = "select max(id) from Member";
 		 Query query = session.createQuery(hql_maxid_member);
 		 int memberid  = Integer.parseInt(query.uniqueResult().toString()) + 1;
-
+		 Transaction tx  = null;
 		 
 		 System.out.println("next memberid is =>"+memberid);
-		 
-		 
-		 /*
-		  * Exceuting Insert Query for Member Table
-		  */
-		 member.setId(0);
-		 Transaction tx  = session.beginTransaction();
-		 session.save(member);
-		 tx.commit();
-		 tx = null;
-
-		 //inst.setMember_id(member);
-		 
-		 /*
-		  * Executing Insert Query for Institute Table
-		  */
-		 
-		 tx = session.beginTransaction();
-		 session.save(inst);
-		 tx.commit();
-		 
+		 try {
+			 
+			 /*
+			  * Exceuting Insert Query for Member Table
+			  */
+			 member.setId(memberid);
+			 tx = session.beginTransaction();
+			 session.save(member);
+			 tx.commit();
+			 
+	
+			 inst.setMember_id(member);
+			 
+			 /*
+			  * Executing Insert Query for Institute Table
+			  */
+			 tx = session.beginTransaction();
+			 session.save(inst);
+			 tx.commit();
+		 }
+		 catch (Exception ex ){
+			 ex.printStackTrace();
+			 tx.rollback();
+		 }
 		 System.out.println("exit addinstitute dao");
 	}
 
