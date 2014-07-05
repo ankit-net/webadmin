@@ -1,5 +1,7 @@
 package education.bean;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -15,6 +17,10 @@ public class Institute_Course {
 	private String name;
 	private String keyword;
 	private int is_active;
+	private LevelEdu level_edu_id;
+	private TypeEdu type_edu_id; 
+	private AdminUser created_by_id;
+	private Date created_date;
 	
 	@Id
 	public int getId() {
@@ -49,6 +55,34 @@ public class Institute_Course {
 	public void setIs_active(int is_active) {
 		this.is_active = is_active;
 	}
-	
-	
+	public void setLevel_edu_id(LevelEdu level_edu_id) {
+		this.level_edu_id = level_edu_id;
+	}
+	@ManyToOne
+	@JoinColumn(name="level_edu_id",referencedColumnName="id")
+	public LevelEdu getLevel_edu_id() {
+		return level_edu_id;
+	}
+	public void setType_edu_id(TypeEdu type_edu_id) {
+		this.type_edu_id = type_edu_id;
+	}
+	@ManyToOne
+	@JoinColumn(name="type_edu_id",referencedColumnName="id")
+	public TypeEdu getType_edu_id() {
+		return type_edu_id;
+	}
+	public void setCreated_by_id(AdminUser created_by_id) {
+		this.created_by_id = created_by_id;
+	}
+	@ManyToOne
+	@JoinColumn(name="created_by_id",referencedColumnName="id")
+	public AdminUser getCreated_by_id() {
+		return created_by_id;
+	}
+	public void setCreated_date(Date created_date) {
+		this.created_date = created_date;
+	}
+	public Date getCreated_date() {
+		return created_date;
+	}
 }

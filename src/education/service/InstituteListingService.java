@@ -120,8 +120,6 @@ public class InstituteListingService {
 		System.out.println("entered institute get addform");
 		Session session = factory.openSession();
 		AdminstratorImplementation adminimpl = new AdminstratorImplementation();
-		
-		
 		map.addAttribute("insttypes", adminimpl.showInstitutetypes(session, -1, -1));
 		map.addAttribute("usertypes", adminimpl.showusertypes(session, -1, -1));
 		map.addAttribute("states", adminimpl.showstates(session, 3));
@@ -140,9 +138,6 @@ public class InstituteListingService {
 	public void submitInstituteAddForm(Institute inst,Member mem){
 		System.out.println("entered submit institute addform service");
 		Session session = factory.openSession();   
-		
-		
-		
 		OperatorImplementation optimpl = new OperatorImplementation();
 		optimpl.addInstitute(session, inst, mem);
 		
@@ -151,4 +146,66 @@ public class InstituteListingService {
 		System.out.println("exit submit institute addform service");
 	}
 
+	public void editInstituteForm(ModelMap map,int instituteid){
+		System.out.println("entered editinstitute form");
+		Session session = factory.openSession();
+		AdminstratorImplementation adminimpl = new AdminstratorImplementation();
+		map.addAttribute("insttypes", adminimpl.showInstitutetypes(session, -1, -1));
+		map.addAttribute("usertypes", adminimpl.showusertypes(session, -1, -1));
+		map.addAttribute("states", adminimpl.showstates(session, 3));
+
+		int currentyear =	Calendar.getInstance().get(Calendar.YEAR);
+		List<Integer> years = new ArrayList<Integer>();
+		for(int i= currentyear; i >= 1900; i--){
+			years.add(i);
+		}
+		map.addAttribute("totalyears", years);
+		
+		//selecting institute details and cities
+		OperatorImplementation optimpl = new OperatorImplementation();
+		HashMap<String, Object> institutedetailmap = optimpl.editInstitute(session, instituteid);
+		Integer selectedstate =Integer.parseInt(institutedetailmap.get("stateid").toString());
+		map.addAttribute("cities",adminimpl.showcities(session, selectedstate, 3, -1, -1));
+		map.addAttribute("institutedetails", institutedetailmap);
+		//System.out.println(adminimpl.showcities(session, selectedstate, 3, -1, -1).toString());
+		
+		
+		session.close();
+		System.out.println("exit editinstitute form");
+	}
+	public void updateInstituteForm(Institute inst,Member mem){
+		System.out.println("entered update service method");
+		Session session = factory.openSession();
+		
+		OperatorImplementation optimpl = new OperatorImplementation();
+		optimpl.updateInstitute(session, inst, mem);
+		
+		session.close();
+		System.out.println("exit update service methods");
+	}
+	
+	public void getInstituteCoursesForm(ModelMap map){
+		System.out.println("entered courses service method");
+		AdminstratorImplementation adminimpl = new AdminstratorImplementation();
+		Session session = factory.openSession();
+		map.addAttribute("typeedulist", adminimpl.showtypeofeducation(session, -1, 10));
+		map.addAttribute("leveledulist", adminimpl.showlevelofeducation(session, -1, 10));
+		
+		OperatorImplementation optimpl  = new OperatorImplementation();
+		map.addAttribute("parentcat", optimpl.showparentcategories(session));
+		
+		
+		session.close();
+		System.out.println("exit courses service method");
+	}
+	
+	public void submitInstituteCourse(HashMap<String, Object> parameters){
+		System.out.println("Entered submitInsituteCourse service");
+		Session session = factory.openSession();
+		OperatorImplementation optimpl = new OperatorImplementation();
+		
+		optimpl.addCourse(session, parameters);
+		session.close();
+		System.out.println("Exit submitInstituteCourse service");
+	}
 }

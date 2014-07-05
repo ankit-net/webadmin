@@ -1,6 +1,7 @@
 package education.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,8 +13,14 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import education.bean.AdminUser;
 import education.bean.Institute;
+import education.bean.Institute_Course;
+import education.bean.Institute_Course_Category;
+import education.bean.LevelEdu;
 import education.bean.Member;
+import education.bean.PK_Institute_Course_Category;
+import education.bean.TypeEdu;
 import education.interfaces.OperatorInterface;
 import education.util.Commons;
 
@@ -62,11 +69,64 @@ public class OperatorImplementation implements OperatorInterface{
 	}
 
 	@Override
-	public void editInstitute() {
+	public HashMap<String, Object> editInstitute(Session session,int instituteid) {
 		// TODO Auto-generated method stub
+		System.out.println("entered editinstitute dao");
+		String query_institutedetails = "select inst.id,inst.member_id.email,inst.member_id.name,inst.josh_rating,inst.member_id.phone,inst.instype.id,inst.yearoffrom,inst.about,inst.city_id.id,inst.state_id.id,inst.member_id.user_type_id.id,inst.member_id.id from Institute inst where inst.id=:instid";
+
+		HashMap<String, Object> instbean = new HashMap<String,Object>();
+		Query query = session.createQuery(query_institutedetails);
+		query.setParameter("instid",instituteid);
 		
+		List institutedetail = query.list();
+		System.out.println("total records found=>"+institutedetail.size());
+		for(Iterator itr = institutedetail.iterator();itr.hasNext();){
+			Object[] institute = (Object[]) itr.next();
+			System.out.println( "institute id"+institute[0]+"emailid=>"+institute[1]+"\n institutename=>"+institute[2]+"\njoshrating=>"+
+			institute[3]+"\nphone=>"+institute[4]+"\ninstitutetype=>"+institute[5]+"\nyearoffrom=>"+institute[6]+"\n about=>"+institute[7]+
+			"\n cityid"+institute[8]+"\n stateid"+institute[9]+"\nusertypeid=>"+institute[10]+"\nmemberid=>"+institute[11]);
+			instbean.put("instid", institute[0]);
+			instbean.put("email", institute[1]);
+			instbean.put("institutename", institute[2]);
+			instbean.put("joshrating", institute[3]);
+			instbean.put("phone", institute[4]);
+			instbean.put("institutetype", institute[5]);
+			instbean.put("yearoffrom", institute[6]);
+			instbean.put("about", institute[7]);
+			instbean.put("cityid", institute[8]);
+			instbean.put("stateid", institute[9]);
+			instbean.put("usertype", institute[10]);
+			instbean.put("memberid", institute[11]);
+		}
+		
+		System.out.println("exit editinstitute dao");
+		return instbean;
 	}
 
+	@Override
+	public void updateInstitute(Session session,Institute inst,Member member) {
+		// TODO Auto-generated method stub
+		System.out.println("entered updateinstitute dao");
+		Transaction tx = session.beginTransaction();
+		
+		
+		
+		try {
+			session.update(inst);
+			session.update(member);
+		
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			tx.rollback();
+		}
+		
+		tx.commit();
+		
+		
+		
+		System.out.println("exit updateinstitute dao");
+	}
 	
 
 	@Override
@@ -330,21 +390,94 @@ public class OperatorImplementation implements OperatorInterface{
 	}
 	
 	
-	@Override
-	public void showFilters() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
-	public void searchInstitutes() {
+	public void addCourse(Session session,HashMap<String, Object> parameters) {
 		// TODO Auto-generated method stub
+		System.out.println("Entered AddCourses DAO");
+		Transaction tx = session.beginTransaction();
+		AdminUser userbean = new AdminUser();
+		userbean.setId(Integer.parseInt(parameters.get("createdbyid").toString()));
+		Institute inst = new Institute();
+		inst.setId((Integer.parseInt(parameters.get("instituteid").toString())));
+		TypeEdu tpedu = new TypeEdu();
+		tpedu.setId(Integer.parseInt(parameters.get("coursetypedu").toString()));
+		LevelEdu ledu = new LevelEdu();
+		ledu.setId(Integer.parseInt(parameters.get("courseleveledu").toString()));
 		
-	}
+		try {
+			Institute_Course icbean = new Institute_Course();
+			icbean.setInstitute_id(inst);
+			icbean.setName((String)parameters.get("coursename").toString());
+			icbean.setKeyword((String) parameters.get("coursekeyword").toString());
+			icbean.setIs_active(1);
+			icbean.setCreated_by_id(userbean);
+			icbean.setCreated_date(new Date());
+			icbean.setType_edu_id(tpedu);
+			icbean.setLevel_edu_id(ledu);
+			session.save(icbean);
+		
+			
+		/*
+		 * Logic for select latest institute course id from Table(Institute_Course).
+		 */
+		String hql_courseid="select max(id) from Institute_Course";
+		Query query = session.createQuery(hql_courseid);
+		int courseid = Integer.parseInt(query.uniqueResult().toString());
+		System.out.println("latest courseid inserted=>"+courseid);
+		
+		
+		/*
+		 * Logic for inserting maincategory into tables (Institute_Course,Institute_Course_Category)
+		 */
+		//tx = session.beginTransaction();
+		Institute_Course coursebean_main = new Institute_Course();
+		coursebean_main.setId(courseid);
+		PK_Institute_Course_Category pkmaincategoryinsertion = new PK_Institute_Course_Category();
+		pkmaincategoryinsertion.setCategory_id(Integer.parseInt(parameters.get("coursemaincat").toString()));
+		pkmaincategoryinsertion.setCourse_id(coursebean_main);
+		pkmaincategoryinsertion.setInstitute_id(inst);
+		
+		Institute_Course_Category iccbean = new Institute_Course_Category();
+		iccbean.setPk(pkmaincategoryinsertion);
+		iccbean.setCreated_by_id(userbean);
+		iccbean.setCreated_date(new Date());
+		iccbean.setIs_active(1);
+		
+		session.save(iccbean);
+		
+		
+		
+		
+		/*
+		* Logic for Inserting Child categories into Tables
+		*/ 
+		String[] childcategories = (String[]) parameters.get("coursechildcat");
+		for(String current:childcategories){
+			System.out.println("current childcategory=>"+current);
+			Institute_Course_Category iccbeanmultiple= new Institute_Course_Category();
+			PK_Institute_Course_Category pkicc = new PK_Institute_Course_Category();
+			pkicc.setCategory_id(Integer.parseInt(current));
+			pkicc.setInstitute_id(inst);
+			pkicc.setCourse_id(coursebean_main);
+			
+			iccbeanmultiple.setPk(pkicc);
+			iccbeanmultiple.setCreated_by_id(userbean);
+			iccbeanmultiple.setCreated_date(new Date());
+			iccbeanmultiple.setIs_active(1);
+			session.save(iccbeanmultiple);
+		}
 
-	@Override
-	public void addCourse() {
-		// TODO Auto-generated method stub
+			tx.commit();
+		}
+		catch (Exception ex) {
+			System.out.println("exception occured=>"+ex.getMessage());
+			tx.rollback();
+			
+			System.out.println("session is closed");
+		}
+		
+		System.out.println("Exit AddCourses DAO");
 		
 	}
 

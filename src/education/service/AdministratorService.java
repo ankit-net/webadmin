@@ -198,17 +198,8 @@ public class AdministratorService {
 		Session session = factory.openSession();   
 		
 		List states = impl.showstates(session,3);
-		List<Object> statescollection = new ArrayList<Object>();
-		for(Iterator<Object> itr = states.iterator();itr.hasNext();){
-			Object[] currentstate = (Object[]) itr.next();
-			HashMap<String, Object> statesmap = new HashMap<String, Object>();
-			statesmap.put("id", currentstate[0]);
-			statesmap.put("name", currentstate[1]);
-			statesmap.put("isactive", currentstate[2]);
-			statesmap.put("createddate",Commons.changedateformat(currentstate[3]));	
-			statescollection.add(statesmap);
-		}
-		map.addAttribute("states", statescollection);
+		
+		map.addAttribute("states", states);
 		City citybean = new City();
 		map.addAttribute("city", citybean);
 		

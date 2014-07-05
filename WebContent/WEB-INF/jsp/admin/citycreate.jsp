@@ -13,7 +13,7 @@
 	<form:form method="post" commandName="city">
 		State Name: &nbsp;
 		<form:select path="state_id">
-			
+			<option value="-1">Please Select</option>
 			<c:forEach var="mystate" items="${states}">
 								
 				<form:option value="${mystate.id}">${mystate.name}</form:option>								

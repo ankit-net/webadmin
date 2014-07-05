@@ -15,6 +15,7 @@ public class Institute_Course_Category {
 	private PK_Institute_Course_Category pk;
 	private AdminUser created_by_id;
 	private Date created_date;
+	private int is_active;
 	
 	@Id
 	@Embedded
@@ -38,5 +39,11 @@ public class Institute_Course_Category {
 	}
 	public void setCreated_date(Date created_date) {
 		this.created_date = created_date;
+	}
+	public int getIs_active() {
+		return is_active;
+	}
+	public void setIs_active(int is_active) {
+		this.is_active = is_active;
 	}
 }

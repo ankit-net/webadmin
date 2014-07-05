@@ -373,12 +373,8 @@ public class AdminstratorImplementation implements AdministratorInterface{
 			usertypesmap.put("name", usertypeobj[1]);
 			usertypesmap.put("is_active", usertypeobj[2]);
 			usertypesmap.put("username", usertypeobj[3]);
-			
-			usertypescollection.add(usertypesmap);
-			
-			
+			usertypescollection.add(usertypesmap);	
 		}
-		
 		System.out.println("exit showusertypes");
 		return usertypescollection;
 	}
@@ -395,5 +391,85 @@ public class AdminstratorImplementation implements AdministratorInterface{
 		return count;
 	}
 
+	@Override
+	public List showlevelofeducation(Session session, int pageno,int recordperPage) {
+		// TODO Auto-generated method stub
+		System.out.println("entered showlevelofeducation dao");
+		List leveleducollection = new ArrayList();
+		String query_leveleducation = "select id,name,is_active,created_by_id.username,created_date from LevelEdu";
+		Query query = session.createQuery(query_leveleducation);
+		if(pageno != -1){
+			query.setFirstResult((pageno - 1) * recordperPage);
+			query.setMaxResults(recordperPage);			
+		}
+		List leveledulist  =  query.list();
+		for(Iterator itr = leveledulist.iterator();itr.hasNext();) {
+			Object[] levelbean = (Object[]) itr.next();
+			HashMap<String, Object> leveledumap = new HashMap<String,Object>();
+			leveledumap.put("id", levelbean[0]);
+			leveledumap.put("name", levelbean[1]);
+			leveledumap.put("isactive", levelbean[2]);
+			leveledumap.put("username", levelbean[3]);
+			leveledumap.put("createdate", Commons.changedateformat(levelbean[4]));
+			
+			leveleducollection.add(leveledumap);	
+		}		
+		System.out.println("exit showlevelofeducation dao");
+		return leveleducollection;
+	}
+	
+	@Override
+	public int countlevelofeducation(Session session) {
+		// TODO Auto-generated method stub
+		System.out.println("entered countlevelofeducation");
+		Query query = session.createQuery("select count(*) from LevelEdu");
+		
+		int result = Integer.parseInt(query.uniqueResult().toString());
+		System.out.println("total levelofeducation found=>"+result);
+		
+		System.out.println("exit countlevelofeducation");
+		return result;
+	}
+	
+	@Override
+	public List showtypeofeducation(Session session, int pageno,int recordperPage) {
+		// TODO Auto-generated method stub
+		System.out.println("entered typeof education");
+		List typeeducollection = new ArrayList();
+		String query_typedu= "select id,name,is_active,created_by_id.username,created_date from TypeEdu";
+		Query query = session.createQuery(query_typedu);
+		if(pageno != -1){
+			query.setFirstResult((pageno - 1) * recordperPage);
+			query.setMaxResults(recordperPage);			
+		}
+		List typeedulist = query.list();
+		for(Iterator itr = typeedulist.iterator();itr.hasNext();){
+			Object[] typedubean = (Object[]) itr.next();
+			HashMap<String, Object> typeedumap = new HashMap<String,Object>();
+			typeedumap.put("id", typedubean[0]);
+			typeedumap.put("name", typedubean[1]);
+			typeedumap.put("isactive", typedubean[2]);
+			typeedumap.put("username", typedubean[3]);
+			typeedumap.put("createddate", Commons.changedateformat(typedubean[4]));
+			
+			typeeducollection.add(typeedumap);
+		}
+		
+		System.out.println("exit typeof education");
+		return typeeducollection;
+	}
+	
+	@Override
+	public int counttypeofeducation(Session session) {
+		// TODO Auto-generated method stub
+		System.out.println("entered count typeofeudcation");
+		String query_count = "select count(*) from TypeEdu";
+		Query query = session.createQuery(query_count);
+				
+		int result =	Integer.parseInt(query.uniqueResult().toString());
+		System.out.println("total records found=>"+result);
+		System.out.println("exit count typeofeducation");
+		return result;
+	}
 	
 }

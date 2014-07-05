@@ -27,5 +27,12 @@ public interface AdministratorInterface extends PropertiesInterface {
 	
 	int countInstitutetypes(Session session);
 	
+	List showlevelofeducation(Session session,int pageno,int recordperPage);
+	
+	int countlevelofeducation(Session session);
+	
+	List showtypeofeducation(Session session,int pageno,int recordperPage);
+	
+	int counttypeofeducation(Session session);
 	
 }

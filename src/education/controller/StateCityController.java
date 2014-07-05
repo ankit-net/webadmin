@@ -91,7 +91,7 @@ public class StateCityController {
 	@RequestMapping(value="createcity",method=RequestMethod.GET)
 	public String createcityget(ModelMap map){
 		System.out.println("entered city get");
-		map = service.getCreateCity(map);
+		service.getCreateCity(map);
 		
 		
 		  

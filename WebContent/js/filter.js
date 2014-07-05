@@ -1,11 +1,15 @@
 $(document).ready(function(){
 	$(".filterbutton").click(function() {
+		$("#coursesid").html("");
+		$("#departmentid").html("");
+		$("#alldetails").hide();
+		
 		filterInstitutes(1);
 	});
 
 	$("#maincat").change(function(){
 		var maincategory = $("#maincat").val();
-		alert('main category called=>'+maincategory);
+		//alert('main category called=>'+maincategory);
 		
 		$.ajax({
 			url: '/WebAdmin/categorylist.do',
@@ -20,7 +24,7 @@ $(document).ready(function(){
 				$("#childcat").hide();
 		    },
 		    success:function(response){
-		    	alert("i got the response");
+		    	//alert("i got the response");
 		    	$("#childcat").empty();
 		    	
 		    	var childcategoryhtml = "<option selected='selected' value='-1'>--Please Select--</option>";
@@ -37,7 +41,7 @@ $(document).ready(function(){
 	});
 	$("#states").change(function(){
 		var stateid = $("#states").val();
-		alert(stateid);
+		//alert(stateid);
 		$.ajax({
 			url: '/WebAdmin/citylist.do',
 			type: "GET",
@@ -49,7 +53,7 @@ $(document).ready(function(){
 				$("#cities").hide();
 			},
 			success : function(response){
-				alert('i got the response');
+				//alert('i got the response');
 				$("#cities").empty();
 				var citieshtml = "<option value='-1' selected='selected'>--Please Select--</option>";
 				var mycities = response.cities.citieslists;
@@ -65,7 +69,7 @@ $(document).ready(function(){
 });
 
 function filterInstitutes(pageno){
-	alert("hi");
+	//alert("hi");
 	var maincategory = $("#maincat").val();
 	var childcategory = $("#childcat").val();
 	var state = $("#states").val();
@@ -82,7 +86,7 @@ function filterInstitutes(pageno){
 			$("#ajax").show();
 		},
 		success:function(response){
-			alert('i got the response');
+			//alert('i got the response');
 			$("#ajax").hide();
 			$("#listing").empty();
 			var listingajax = "<tr><td width='30' class='tableheader'>Id </td><td width='166' class='tableheader'>Institute Name</td><td width='110' class='tableheader'>Institute type </td><td width='166' class='tableheader'>Location</td><td width='97' class='tableheader'>Verified By </td><td width='97' class='tableheader'>Created By</td><td width='97' class='tableheader'>Expand</td></tr>";
@@ -97,7 +101,7 @@ function filterInstitutes(pageno){
 				allajax += "<td class='tabledata'>"+instajax[i].country+",&nbsp;"+instajax[i].state+",&nbsp;"+instajax[i].city+"</td>";
 				allajax += "<td class='tabledata'>"+instajax[i].verifiedby+"</td>";
 				allajax += "<td class='tabledata'>"+instajax[i].createdby+"</td>";
-				allajax += "<td class='tabledata'><button id='detailbutton' value="+instajax[i].id+">Click Here</button></td>";
+				allajax += "<td class='tabledata'><button class='inst_detail' id="+instajax[i].id+">Click Here</button></td>";
 			}
 			
 			$("#listing").html(allajax);

@@ -5,7 +5,7 @@
 $(document).ready(function() {
 	$("#allstates").change(function() {
 		var selectedstate = $("#allstates").val();
-		alert('stateid=>'+selectedstate);
+		//alert('stateid=>'+selectedstate);
 		$("#allcitieslist").hide();
 		$.ajax({
 			url:'/WebAdmin/citylist.do',
@@ -14,7 +14,7 @@ $(document).ready(function() {
 			dataType:'json',
 			data:"stateid="+selectedstate+'&currentpage=-1',
 			success:function(response) {
-				alert('i got the response=>'+response);
+				//alert('i got the response=>'+response);
 				var mycities = response.cities.citieslists;;
 				var citieslisthtml = "<select name='allcitieslist' id='allcitieslist'>";
 				for(var i=0;i<mycities.length;i++){

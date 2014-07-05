@@ -8,7 +8,7 @@ $(document).ready(function() {
 });
 function getResultCity(pageno) {	
 	
-	alert('pageno=>'+pageno);
+	//alert('pageno=>'+pageno);
 	
 	//code executed to show list of cities under that particular state;
 	//alert('code executed to show list of cities under that particular state');
@@ -27,7 +27,7 @@ function getResultCity(pageno) {
 		dataType:'json',
 		data:"stateid="+selectedstate+'&currentpage='+currentpage,
 		success:function(response) {
-			alert('i got the response=>'+response);
+			//alert('i got the response=>'+response);
 			$("#citieslist").empty();
 			$("#ajax_loader").hide();
 			var citiescounthtml = "<p align='center'>Total Records Found:&nbsp;&nbsp;"+response.cities.count+'</p><br/>';

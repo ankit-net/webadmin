@@ -3,9 +3,12 @@
  */
 package education.interfaces;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Session;
+
 import education.bean.Institute;
 import education.bean.Member;
 
@@ -17,7 +20,9 @@ public interface OperatorInterface {
 	
 	void addInstitute(Session session,Institute inst,Member member);
 	
-	void editInstitute();
+	HashMap<String, Object> editInstitute(Session session,int instituteid);
+	
+	void updateInstitute(Session session,Institute inst,Member member);
 
 	List showInstitutes(Session session,int pageno,int recordperpage);
 	
@@ -26,12 +31,8 @@ public interface OperatorInterface {
 	List showInstitutes_Filter(Session session,Map<String, Object> parameters);
 		
 	List showparentcategories(Session session);
-	
-	void showFilters();
-	
-	void searchInstitutes();
-	
-	void addCourse();
+		
+	void addCourse(Session session,HashMap<String, Object> parameters);
 	
 	void editCourse();
 		
