@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +125,8 @@ public class InstituteListingService {
 		map.addAttribute("insttypes", adminimpl.showInstitutetypes(session, -1, -1));
 		map.addAttribute("usertypes", adminimpl.showusertypes(session, -1, -1));
 		map.addAttribute("states", adminimpl.showstates(session, 3));
+		map.addAttribute("leveledu", adminimpl.showlevelofeducation(session, -1, -1));
+		map.addAttribute("typeedu", adminimpl.showtypeofeducation(session, -1, -1));
 		
 		int currentyear =	Calendar.getInstance().get(Calendar.YEAR);
 		List<Integer> years = new ArrayList<Integer>();
@@ -135,11 +139,12 @@ public class InstituteListingService {
 	}
 
 	
-	public void submitInstituteAddForm(Institute inst,Member mem){
+	public void submitInstituteAddForm(HttpServletRequest request){
 		System.out.println("entered submit institute addform service");
-		Session session = factory.openSession();   
+		Session session = factory.openSession(); 
+		
 		OperatorImplementation optimpl = new OperatorImplementation();
-		optimpl.addInstitute(session, inst, mem);
+		optimpl.addInstitute(session, request);
 		
 		session.close();
 		

@@ -60,7 +60,25 @@ tinyMCE.init({
 						
 			About The Institute: <textarea rows="20" cols="100"  id="about" name="about"></textarea>
 	<br/>
+			Type of Education: <c:forEach var="typebean" items="${typeedu}">
+									<input type="checkbox" name="typeedu" id="typeedu" value="${typebean.id}"/><c:out value="${typebean.name}"/><br/>
+								</c:forEach>
+	<br/>
 	
+			Level of Education: <c:forEach var="levelbean" items="${leveledu}">
+									<input type="checkbox" name="leveledu" id="leveledu" value="${levelbean.id}"/><c:out value="${levelbean.name}"/><br/>
+								</c:forEach>
+	<br/>
+			Keyword:			<input type="text" name="keyword"/>
+			
+	<br/>
+			Source:				<input type="text"	name="source" >	
+			
+	<br/>
+			Address:			<textarea rows="20" cols="100" id="address" name="address"></textarea>		
+	
+	
+	<br/>
 			State: <select name="allstates" id="allstates">
 						<option value="-1">--Please Select--</option>
 						<c:forEach var="state" items="${states}">

@@ -106,7 +106,7 @@
 				<td>${inst.institute_id}</td>
 				<td>${inst.institute_name}</td>
 				<td>${inst.institute_type}</td>
-				<td>${inst.country},&nbsp;${inst.state},&nbsp;${inst.city}</td>
+				<td>${inst.state},&nbsp;${inst.city}</td>
 				<td>${inst.createdby}</td>
 				<td>${inst.created_date}</td>
 				<td><button class="inst_detail" id="${inst.institute_id}">Click Here</button></td>

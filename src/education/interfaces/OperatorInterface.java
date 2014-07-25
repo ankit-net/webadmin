@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.Session;
 
 import education.bean.Institute;
@@ -18,7 +20,7 @@ import education.bean.Member;
  */
 public interface OperatorInterface {
 	
-	void addInstitute(Session session,Institute inst,Member member);
+	void addInstitute(Session session,HttpServletRequest request);
 	
 	HashMap<String, Object> editInstitute(Session session,int instituteid);
 	

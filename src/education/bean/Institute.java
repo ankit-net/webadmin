@@ -1,8 +1,6 @@
 package education.bean;
 
 import java.util.Date;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -22,10 +20,13 @@ public class Institute {
 	private String about;
 	private City city_id;
 	private State state_id;
-	private Country country_id;
+	
 	private int is_active;
 	private AdminUser created_by_id;
 	private Date created_date;
+	private String keyword;
+	private String source;
+	private String address;
 	
 	@Id
 	public int getId() {
@@ -85,14 +86,14 @@ public class Institute {
 	public void setState_id(State state_id) {
 		this.state_id = state_id;
 	}
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name="country_id",referencedColumnName="id")
 	public Country getCountry_id() {
 		return country_id;
 	}
 	public void setCountry_id(Country country_id) {
 		this.country_id = country_id;
-	}
+	}*/
 	public int getIs_active() {
 		return is_active;
 	}
@@ -112,6 +113,24 @@ public class Institute {
 	}
 	public void setCreated_date(Date created_date) {
 		this.created_date = created_date;
+	}
+	public String getKeyword() {
+		return keyword;
+	}
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+	public String getSource() {
+		return source;
+	}
+	public void setSource(String source) {
+		this.source = source;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 }

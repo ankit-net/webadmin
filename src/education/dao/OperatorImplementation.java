@@ -9,27 +9,95 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import education.bean.AdminUser;
+import education.bean.City;
 import education.bean.Institute;
 import education.bean.Institute_Course;
 import education.bean.Institute_Course_Category;
+import education.bean.Institute_LevelofEdu;
+import education.bean.Institute_Type;
+import education.bean.Institute_TypeofEdu;
 import education.bean.LevelEdu;
 import education.bean.Member;
+import education.bean.PK_InstituteLevelEdu;
 import education.bean.PK_Institute_Course_Category;
+import education.bean.PK_Institute_TypeEdu;
+import education.bean.State;
 import education.bean.TypeEdu;
+import education.bean.UserType;
 import education.interfaces.OperatorInterface;
 import education.util.Commons;
 
 public class OperatorImplementation implements OperatorInterface{
 
 	@Override
-	public void addInstitute(Session session,Institute inst,Member member) {
+	public void addInstitute(Session session,HttpServletRequest request) {
 		// TODO Auto-generated method stub
 		 System.out.println("entered addinstitute dao");
+		 System.out.println("institutename=>"+request.getParameter("name")+"\temail=>"+request.getParameter("email"));
+		 System.out.println("usertype=>"+request.getParameter("usertype")+"\trating=>"+request.getParameter("rating"));
+		 System.out.println("phone=>"+request.getParameter("usertype")+"\tinstitutetype=>"+request.getParameter("institutetype"));
+		 System.out.println("year=>"+request.getParameter("year")+"\tuserid=>"+request.getAttribute("userid").toString());
+		 System.out.println("typedu values=>"+request.getParameterValues("typeedu"));
+		 System.out.println("leveledu values=>"+request.getParameterValues("leveledu"));
+		 /*
+		  * Preparing Member Bean
+		  */
+		 UserType usertypebean = new UserType();
+		 usertypebean.setId(Integer.parseInt(request.getParameter("usertype")));
+		 
+		 Member member = new Member();
+		 member.setName(request.getParameter("name"));
+		 member.setEmail(request.getParameter("email"));
+		 member.setUser_type_id(usertypebean);
+		 member.setPhone(request.getParameter("phone"));
+		 member.setCreated_date(new Date());
+		 
+		 /*
+		  * Preparing Institute Bean
+		  */
+		 Institute_Type insttypebean = new Institute_Type();
+		 insttypebean.setId(Integer.parseInt(request.getParameter("institutetype")));
+		 
+		 
+		 State st = new State();
+		 st.setId(Integer.parseInt(request.getParameter("allstates")));
+		 
+		 City ct = new City();
+		 ct.setId(Integer.parseInt(request.getParameter("allcitieslist")));
+		 
+		 AdminUser userbean = new AdminUser();
+		 userbean.setId(Integer.parseInt(request.getAttribute("userid").toString()));
+		 
+		 
+		 Institute inst = new Institute();
+		 inst.setJosh_rating(request.getParameter("rating"));
+		 inst.setInstype(insttypebean);
+		 inst.setYearoffrom(Integer.parseInt(request.getParameter("year")));
+		 inst.setAbout(request.getParameter("about"));
+		 inst.setState_id(st);
+		 inst.setCity_id(ct);
+		 inst.setKeyword(request.getParameter("keyword"));
+		 inst.setSource(request.getParameter("source"));
+		 inst.setAddress(request.getParameter("address"));
+		 inst.setCreated_by_id(userbean);
+		 inst.setCreated_date(new Date());
+		 
+		 /*
+		  *Preparaing Institute_TypeofEdu Bean 
+		  */
+		 
+		 
+		 
+		 /*
+		  * Preparing Institute_LevelofEdu Bean
+		  */
 		 
 		 
 		 /*
@@ -49,7 +117,7 @@ public class OperatorImplementation implements OperatorInterface{
 			 member.setId(memberid);
 			 tx = session.beginTransaction();
 			 session.save(member);
-			 tx.commit();
+	
 			 
 	
 			 inst.setMember_id(member);
@@ -57,8 +125,59 @@ public class OperatorImplementation implements OperatorInterface{
 			 /*
 			  * Executing Insert Query for Institute Table
 			  */
-			 tx = session.beginTransaction();
+	
 			 session.save(inst);
+			 
+			 /*
+			  * Preparing for InstituteTypeofEdu
+			  * Executing Insert Query for Institute TypeEdu
+			  */
+			 
+			 String hql_maxinstid = "select max(id) from Institute";
+			 query = session.createQuery(hql_maxinstid);
+			 int instituteid = Integer.parseInt(query.uniqueResult().toString());
+			 System.out.println("last inserted instituteid=>"+instituteid);
+			 //inst.setId(instituteid);
+			 
+			 Institute newinstbean =new Institute();
+			 newinstbean.setId(instituteid);
+			 for(String current:request.getParameterValues("typeedu")){
+				 System.out.println("current type edu id=>"+current);
+				 
+				 
+				 TypeEdu typeedubean = new TypeEdu();
+				 typeedubean.setId(Integer.parseInt(current));
+				 
+				 PK_Institute_TypeEdu pkbean = new PK_Institute_TypeEdu();
+				 pkbean.setInstitute_id(newinstbean);
+				 pkbean.setType_Edu_ID(typeedubean);
+				 
+				 Institute_TypeofEdu typeofedubean = new Institute_TypeofEdu();
+				 typeofedubean.setPkid(pkbean);
+				 
+				 session.save(typeofedubean);
+				 
+			 }
+			 
+			 for(String current:request.getParameterValues("leveledu")){
+				 System.out.println("current level edu id="+current);
+
+				 PK_InstituteLevelEdu pklevelbean = new PK_InstituteLevelEdu();
+				 pklevelbean.setInstitute_id(newinstbean);
+				 
+				 LevelEdu leveledubean = new LevelEdu();
+				 leveledubean.setId(Integer.parseInt(current));
+				 
+				 pklevelbean.setLevel_edu_id(leveledubean);
+				 
+				 Institute_LevelofEdu levelofedubean = new Institute_LevelofEdu();
+				 levelofedubean.setPkinstleveledu(pklevelbean);
+				 
+				 session.save(levelofedubean);
+			 }
+			 
+			 
+			 
 			 tx.commit();
 		 }
 		 catch (Exception ex ){
@@ -134,7 +253,7 @@ public class OperatorImplementation implements OperatorInterface{
 		// TODO Auto-generated method stub
 		System.out.println("entered showinstitutes dao");
 		List institutecollection = new ArrayList();
-		String hql_showinstitutes= "select inst.id as institute_id,inst.member_id.name as institute_name,inst.instype.name as institute_type,inst.city_id.name as city,inst.state_id.name as state,inst.country_id.name as country,inst.created_by_id.username as createdby,inst.created_date from Institute inst";
+		String hql_showinstitutes= "select inst.id as institute_id,inst.member_id.name as institute_name,inst.instype.name as institute_type,inst.city_id.name as city,inst.state_id.name as state,inst.created_by_id.username as createdby,inst.created_date from Institute inst";
 		Query query = session.createQuery(hql_showinstitutes);
 		query.setFirstResult((pageno - 1 ) * recordperPage);
 		query.setMaxResults(recordperPage);
@@ -149,9 +268,8 @@ public class OperatorImplementation implements OperatorInterface{
 			institutemap.put("institute_type", instituteobject[2]);
 			institutemap.put("city", instituteobject[3]);
 			institutemap.put("state", instituteobject[4]);
-			institutemap.put("country", instituteobject[5]);
-			institutemap.put("createdby", instituteobject[6]);
-			institutemap.put("created_date",Commons.changedateformat(instituteobject[7]));
+			institutemap.put("createdby", instituteobject[5]);
+			institutemap.put("created_date",Commons.changedateformat(instituteobject[6]));
 			
 			institutecollection.add(institutemap);
 		}
