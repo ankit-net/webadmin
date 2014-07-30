@@ -1,5 +1,7 @@
+<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -90,6 +92,57 @@ tinyMCE.init({
 						
 			About The Institute: <textarea rows="20" cols="100"  id="about" name="about" ><c:out value="${institutedetails.about}"/>  </textarea>
 	<br/>
+			Type of Education: 
+			
+		<c:forEach var="typebean" items="${typeedu}">
+			<c:choose>
+				<c:when test="${typebean.isactive == 1 }">
+					
+					<input type="checkbox" name="typeedu" id="typeedu" checked="checked" value="${typebean.id}"/><c:out value="${typebean.name}"/>
+				</c:when>
+				<c:otherwise>
+					<input type="checkbox" name="typeedu" id="typeedu" value="${typebean.id}"/><c:out value="${typebean.name}"/>	
+				</c:otherwise>
+			</c:choose>
+			<br/>
+		</c:forEach>
+								
+			
+	<br/>
+	
+			Level of Education:
+			
+				<c:forEach var="levelbean" items="${leveledu}">
+					<c:choose>
+						<c:when test="${levelbean.isactive == 1}">
+							<input type="checkbox" name="leveledu" id="leveledu" checked="checked" value="${levelbean.id}"/><c:out value="${levelbean.name}"/><br/>
+						
+						</c:when>
+						<c:otherwise>
+						
+							<input type="checkbox" name="leveledu" id="leveledu" value="${levelbean.id}"/><c:out value="${levelbean.name}"/><br/>	
+						</c:otherwise>	
+					</c:choose>				
+					
+				</c:forEach>
+			
+			
+	<br/>
+	
+			Keyword:<input type="text" name="keyword" value="${institutedetails.keyword}"/>
+			
+	<br/>
+			Source:<input type="text" name="source" value="${institutedetails.source }"/>
+			
+			
+	<br/>
+	
+			Address:<textarea rows="20" cols="100" id="address" name="address"><c:out value="${institutedetails.address}"/></textarea>
+			
+			
+			
+	<br/>
+	
 	
 			State: <select name="allstates" id="allstates">
 						<option value="-1">--Please Select--</option>

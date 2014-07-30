@@ -90,17 +90,6 @@ public class OperatorImplementation implements OperatorInterface{
 		 inst.setCreated_date(new Date());
 		 
 		 /*
-		  *Preparaing Institute_TypeofEdu Bean 
-		  */
-		 
-		 
-		 
-		 /*
-		  * Preparing Institute_LevelofEdu Bean
-		  */
-		 
-		 
-		 /*
 		  * Selecting max id from member table
 		  */
 		 String hql_maxid_member  = "select max(id) from Member";
@@ -141,6 +130,10 @@ public class OperatorImplementation implements OperatorInterface{
 			 
 			 Institute newinstbean =new Institute();
 			 newinstbean.setId(instituteid);
+			 /*
+			  *Preparaing Institute_TypeofEdu Bean 
+			  */
+			 
 			 for(String current:request.getParameterValues("typeedu")){
 				 System.out.println("current type edu id=>"+current);
 				 
@@ -149,8 +142,8 @@ public class OperatorImplementation implements OperatorInterface{
 				 typeedubean.setId(Integer.parseInt(current));
 				 
 				 PK_Institute_TypeEdu pkbean = new PK_Institute_TypeEdu();
-				 pkbean.setInstitute_id(newinstbean);
-				 pkbean.setType_Edu_ID(typeedubean);
+				 pkbean.setInstituteid(instituteid);
+				 pkbean.setTypeduid(Integer.parseInt(current));
 				 
 				 Institute_TypeofEdu typeofedubean = new Institute_TypeofEdu();
 				 typeofedubean.setPkid(pkbean);
@@ -158,17 +151,19 @@ public class OperatorImplementation implements OperatorInterface{
 				 session.save(typeofedubean);
 				 
 			 }
-			 
+			 /*
+			  * Preparing Institute_LevelofEdu Bean
+			  */
 			 for(String current:request.getParameterValues("leveledu")){
 				 System.out.println("current level edu id="+current);
 
 				 PK_InstituteLevelEdu pklevelbean = new PK_InstituteLevelEdu();
-				 pklevelbean.setInstitute_id(newinstbean);
+				 pklevelbean.setInstituteid(instituteid);
 				 
 				 LevelEdu leveledubean = new LevelEdu();
 				 leveledubean.setId(Integer.parseInt(current));
 				 
-				 pklevelbean.setLevel_edu_id(leveledubean);
+				 pklevelbean.setLeveleduid(Integer.parseInt(current));
 				 
 				 Institute_LevelofEdu levelofedubean = new Institute_LevelofEdu();
 				 levelofedubean.setPkinstleveledu(pklevelbean);
@@ -191,8 +186,9 @@ public class OperatorImplementation implements OperatorInterface{
 	public HashMap<String, Object> editInstitute(Session session,int instituteid) {
 		// TODO Auto-generated method stub
 		System.out.println("entered editinstitute dao");
-		String query_institutedetails = "select inst.id,inst.member_id.email,inst.member_id.name,inst.josh_rating,inst.member_id.phone,inst.instype.id,inst.yearoffrom,inst.about,inst.city_id.id,inst.state_id.id,inst.member_id.user_type_id.id,inst.member_id.id from Institute inst where inst.id=:instid";
+		String query_institutedetails = "select inst.id,inst.member_id.email,inst.member_id.name,inst.josh_rating,inst.member_id.phone,inst.instype.id,inst.yearoffrom,inst.about,inst.city_id.id,inst.state_id.id,inst.member_id.user_type_id.id,inst.member_id.id,inst.keyword,inst.source,inst.address from Institute inst where inst.id=:instid";
 
+		String query_institutetypedu = "select ite.pkid.typeduid  from Institute_TypeofEdu ite where ite.pkid.instituteid=:instid";
 		HashMap<String, Object> instbean = new HashMap<String,Object>();
 		Query query = session.createQuery(query_institutedetails);
 		query.setParameter("instid",instituteid);
@@ -203,7 +199,9 @@ public class OperatorImplementation implements OperatorInterface{
 			Object[] institute = (Object[]) itr.next();
 			System.out.println( "institute id"+institute[0]+"emailid=>"+institute[1]+"\n institutename=>"+institute[2]+"\njoshrating=>"+
 			institute[3]+"\nphone=>"+institute[4]+"\ninstitutetype=>"+institute[5]+"\nyearoffrom=>"+institute[6]+"\n about=>"+institute[7]+
-			"\n cityid"+institute[8]+"\n stateid"+institute[9]+"\nusertypeid=>"+institute[10]+"\nmemberid=>"+institute[11]);
+			"\n cityid"+institute[8]+"\n stateid"+institute[9]+"\nusertypeid=>"+institute[10]+"\nmemberid=>"+institute[11]
+			+"\n keyword=>"+institute[12]+"\nsource=>"+institute[13]+"\naddress=>"+institute[14]);		
+			
 			instbean.put("instid", institute[0]);
 			instbean.put("email", institute[1]);
 			instbean.put("institutename", institute[2]);
@@ -216,34 +214,180 @@ public class OperatorImplementation implements OperatorInterface{
 			instbean.put("stateid", institute[9]);
 			instbean.put("usertype", institute[10]);
 			instbean.put("memberid", institute[11]);
+			instbean.put("keyword", institute[12]);
+			instbean.put("source", institute[13]);
+			instbean.put("address", institute[14]);
 		}
 		
+		
+		Query query2 = session.createQuery(query_institutetypedu);
+		query2.setParameter("instid", instituteid);
+		List institutetypedu = query2.list();
+		System.out.println("total institutetypeofedu found=>"+institutetypedu.size());
+		
+		
+		List<Integer> typeedulist = new ArrayList<>();
+		
+		for(Iterator itr = institutetypedu.iterator();itr.hasNext();){
+			Integer typeofedubean = (Integer) itr.next();
+			
+			typeedulist.add(typeofedubean);
+		}
+		System.out.println("typedu=>"+typeedulist.toString());
+		instbean.put("typeedulist", typeedulist);
+																											
+		String query_leveledu= "select ile.pkinstleveledu.leveleduid  from Institute_LevelofEdu ile where ile.pkinstleveledu.instituteid=:instid";
+		Query query3 = session.createQuery(query_leveledu);
+		query3.setParameter("instid", instituteid);
+		
+		List instituteleveledu = query3.list();
+		
+		System.out.println("total instituteleveledu found=>"+instituteleveledu.size());
+		
+		List<Integer> leveledulist = new ArrayList<Integer>();
+		
+		for(Iterator itr = instituteleveledu.iterator();itr.hasNext();){
+			Integer levelofedubean = (Integer) itr.next();
+			
+			leveledulist.add(levelofedubean);
+		}
+		System.out.println("leveledulist=>"+leveledulist.toString());
+		instbean.put("leveledulist", leveledulist);
 		System.out.println("exit editinstitute dao");
 		return instbean;
 	}
 
 	@Override
-	public void updateInstitute(Session session,Institute inst,Member member) {
-		// TODO Auto-generated method stub
+	public void updateInstitute(Session session,HttpServletRequest request) {
+		
 		System.out.println("entered updateinstitute dao");
+		 System.out.println("institutename=>"+request.getParameter("name")+"\temail=>"+request.getParameter("email"));
+		 System.out.println("usertype=>"+request.getParameter("usertype")+"\trating=>"+request.getParameter("rating"));
+		 System.out.println("phone=>"+request.getParameter("usertype")+"\tinstitutetype=>"+request.getParameter("institutetype"));
+		 System.out.println("year=>"+request.getParameter("year")+"\tuserid=>"+request.getAttribute("userid").toString());
+		 System.out.println("typedu values=>"+request.getParameterValues("typeedu"));
+		 System.out.println("leveledu values=>"+request.getParameterValues("leveledu"));
+		 System.err.println("member id=>"+request.getParameter("memid"));
+		 System.out.println("instituteid=>"+request.getParameter("id"));
+		/*Preparing several classes*/
 		Transaction tx = session.beginTransaction();
 		
+		/*
+		  * Preparing Member Bean
+		  */
+		 UserType usertypebean = new UserType();
+		 usertypebean.setId(Integer.parseInt(request.getParameter("usertype")));
+		 
+		 Member member = new Member();
+		 member.setId(Integer.parseInt(request.getParameter("memid")));
+		 member.setName(request.getParameter("name"));
+		 member.setEmail(request.getParameter("email"));
+		 member.setUser_type_id(usertypebean);
+		 member.setPhone(request.getParameter("phone"));
+		 member.setCreated_date(new Date());
+		 session.update(member);
 		
-		
-		try {
-			session.update(inst);
-			session.update(member);
-		
+		 
+		 /*
+		  * Preparing Institute Bean
+		  */
+		 
+		 Institute_Type insttypebean = new Institute_Type();
+		 insttypebean.setId(Integer.parseInt(request.getParameter("institutetype")));
+		 
+		 
+		 State st = new State();
+		 st.setId(Integer.parseInt(request.getParameter("allstates")));
+		 
+		 City ct = new City();
+		 ct.setId(Integer.parseInt(request.getParameter("allcitieslist")));
+		 
+		 AdminUser userbean = new AdminUser();
+		 userbean.setId(Integer.parseInt(request.getAttribute("userid").toString()));
+		 
+		 
+		 Institute inst = new Institute();
+		 inst.setMember_id(member);
+		 inst.setId(Integer.parseInt(request.getParameter("id")));
+		 inst.setJosh_rating(request.getParameter("rating"));
+		 inst.setInstype(insttypebean);
+		 inst.setYearoffrom(Integer.parseInt(request.getParameter("year")));
+		 inst.setAbout(request.getParameter("about"));
+		 inst.setState_id(st);
+		 inst.setCity_id(ct);
+		 inst.setKeyword(request.getParameter("keyword"));
+		 inst.setSource(request.getParameter("source"));
+		 inst.setAddress(request.getParameter("address"));
+		 inst.setCreated_by_id(userbean);
+		 inst.setCreated_date(new Date());
+		 session.update(inst);
+		 
+		 try {
+			 /*
+			  * Deleting existing records for InstituteTypeofEdu for This InstituteID
+			  */
+			 String del_typeofedu = "delete  Institute_TypeofEdu ite where ite.pkid.instituteid=:instid";
+			 Query qdel = session.createQuery(del_typeofedu);
+			 qdel.setParameter("instid", inst.getId());
+			 
+			 qdel.executeUpdate();
+			 
+			 String del_levelofedu = "delete  Institute_LevelofEdu ile where ile.pkinstleveledu.instituteid=:instid";
+			 Query qdel_level = session.createQuery(del_levelofedu);
+			 qdel_level.setParameter("instid", inst.getId());
+			 qdel_level.executeUpdate();
+			 
+			 
+			 /*
+			  *Preparaing Institute_TypeofEdu Bean 
+			  */
+			 
+			 for(String current:request.getParameterValues("typeedu")){
+				 System.out.println("current type edu id=>"+current);
+				 
+						 
+				 
+				 TypeEdu typeedubean = new TypeEdu();
+				 typeedubean.setId(Integer.parseInt(current));
+				 
+				 PK_Institute_TypeEdu pkbean = new PK_Institute_TypeEdu();
+				 pkbean.setInstituteid(Integer.parseInt(request.getParameter("id")));
+				 pkbean.setTypeduid(Integer.parseInt(current));
+				 
+				 Institute_TypeofEdu typeofedubean = new Institute_TypeofEdu();
+				 typeofedubean.setPkid(pkbean);
+				 
+				 session.saveOrUpdate(typeofedubean);
+				 
+			 }
+			 /*
+			  * Preparing Institute_LevelofEdu Bean
+			  */
+			 for(String current:request.getParameterValues("leveledu")){
+				 System.out.println("current level edu id="+current);
+				 
+				 
+				 PK_InstituteLevelEdu pklevelbean = new PK_InstituteLevelEdu();
+				 pklevelbean.setInstituteid(Integer.parseInt(request.getParameter("id")));
+				 
+				 LevelEdu leveledubean = new LevelEdu();
+				 leveledubean.setId(Integer.parseInt(current));
+				 
+				 pklevelbean.setLeveleduid(Integer.parseInt(current));
+				 
+				 Institute_LevelofEdu levelofedubean = new Institute_LevelofEdu();
+				 levelofedubean.setPkinstleveledu(pklevelbean);
+				 
+				 session.saveOrUpdate(levelofedubean);
+				 
+			 }
+			 tx.commit();
 		}
-		catch (Exception e){
-			e.printStackTrace();
+		catch(Exception ex){
 			tx.rollback();
+			ex.printStackTrace();
 		}
-		
-		tx.commit();
-		
-		
-		
+	
 		System.out.println("exit updateinstitute dao");
 	}
 	
@@ -305,7 +449,7 @@ public class OperatorImplementation implements OperatorInterface{
 		Integer currentpage = (Integer) parameters.get("currentpage");
 		
 		
-		StringBuilder institutes_filter = new StringBuilder("SELECT DISTINCT inst.id as institute_id, inst.member_id.name as institute_name, inst.instype.name as institute_type, inst.city_id.name as city, inst.state_id.name as state , inst.country_id.name as country, inst.created_by_id.username as createdby,inst.created_date FROM Institute inst WHERE ");
+		StringBuilder institutes_filter = new StringBuilder("SELECT DISTINCT inst.id as institute_id, inst.member_id.name as institute_name, inst.instype.name as institute_type, inst.city_id.name as city, inst.state_id.name as state , inst.created_by_id.username as createdby,inst.created_date FROM Institute inst WHERE ");
 		
 		StringBuilder count_filter = new StringBuilder("SELECT COUNT(DISTINCT inst.id) FROM Institute inst WHERE ");
 	//	Query query = session.createQuery("SELECT inst.id, inst.member_id.name, inst.institute_type, inst.city_id.name, inst.state_id.name , inst.country_id.name , inst.created_by_id.username , inst.verified_by_id.username FROM Institute inst WHERE inst.state_id.id = :states AND inst.city_id.id IN (:cities) ORDER BY inst.member_id.name ");
@@ -444,8 +588,8 @@ public class OperatorImplementation implements OperatorInterface{
 			currentinstitute.put("type", (String) instituteResult[2]);
 			currentinstitute.put("city", (String) instituteResult[3]);
 			currentinstitute.put("state", (String) instituteResult[4]);
-			currentinstitute.put("country", (String) instituteResult[5]);
-			currentinstitute.put("createdby", (String) instituteResult[6]);
+			//currentinstitute.put("country", (String) instituteResult[5]);
+			currentinstitute.put("createdby", (String) instituteResult[5]);
 			
 			institutecollection.add(currentinstitute);
 		}

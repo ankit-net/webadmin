@@ -24,7 +24,7 @@ public interface OperatorInterface {
 	
 	HashMap<String, Object> editInstitute(Session session,int instituteid);
 	
-	void updateInstitute(Session session,Institute inst,Member member);
+	void updateInstitute(Session session,HttpServletRequest request);
 
 	List showInstitutes(Session session,int pageno,int recordperpage);
 	

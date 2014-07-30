@@ -20,6 +20,7 @@ import org.springframework.ui.ModelMap;
 
 import education.bean.Institute;
 import education.bean.Member;
+import education.bean.TypeEdu;
 import education.dao.AdminstratorImplementation;
 import education.dao.OperatorImplementation;
 import education.util.Commons;
@@ -151,14 +152,60 @@ public class InstituteListingService {
 		System.out.println("exit submit institute addform service");
 	}
 
-	public void editInstituteForm(ModelMap map,int instituteid){
+	public void editInstituteForm(ModelMap map,int instituteid,HttpServletRequest request){
 		System.out.println("entered editinstitute form");
 		Session session = factory.openSession();
 		AdminstratorImplementation adminimpl = new AdminstratorImplementation();
 		map.addAttribute("insttypes", adminimpl.showInstitutetypes(session, -1, -1));
 		map.addAttribute("usertypes", adminimpl.showusertypes(session, -1, -1));
 		map.addAttribute("states", adminimpl.showstates(session, 3));
+		
+		List finalleveledu = new ArrayList<>();
+		List finaltypeedu = new ArrayList<>();
+		
+		List alltypeedu = adminimpl.showtypeofeducation(session, -1, -1);
+		
+		
+		OperatorImplementation optimpl = new OperatorImplementation();
+		HashMap<String, Object> institutedetailmap = optimpl.editInstitute(session, instituteid);
+		
+		List<Integer> mytypedu = (List<Integer>) institutedetailmap.get("typeedulist");
+		
+		for(Iterator itr=alltypeedu.iterator();itr.hasNext();){
+			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			HashMap<String, Object> typebean = (HashMap<String, Object>) itr.next();
+			
+			
+			typebean.put("isactive", 0);
+			
+			if(mytypedu.contains(typebean.get("id")) ) {
+				//this means checked typeedu is found on the collection.. :)
+				typebean.put("isactive", 1);
+			}
+			System.out.println("id=>"+typebean.get("id")+"\tname=>"+typebean.get("name")+"\tisactive=>"+typebean.get("isactive"));
+			finaltypeedu.add(typebean);
+		}
+		
+		map.addAttribute("typeedu", finaltypeedu);
+		
+		List<Integer> myleveledu = (List<Integer>) institutedetailmap.get("leveledulist");
+		List allleveledu = adminimpl.showlevelofeducation(session, -1, -1);
+		for(Iterator itr = allleveledu.iterator();itr.hasNext();) {
+			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			HashMap<String, Object> levelbean = (HashMap<String, Object>) itr.next();
+	
 
+			levelbean.put("isactive", 0);
+			
+			if(myleveledu.contains(levelbean.get("id"))){
+				//this means checked leveledu is found on the collection.. :)
+				levelbean.put("isactive", 1);
+			}
+			System.out.println("id=>"+levelbean.get("id")+"\tname=>"+levelbean.get("name")+"\tisactive=>"+levelbean.get("isactive"));
+			finalleveledu.add(levelbean);
+		}
+		map.addAttribute("leveledu", finalleveledu);
+		
 		int currentyear =	Calendar.getInstance().get(Calendar.YEAR);
 		List<Integer> years = new ArrayList<Integer>();
 		for(int i= currentyear; i >= 1900; i--){
@@ -167,23 +214,25 @@ public class InstituteListingService {
 		map.addAttribute("totalyears", years);
 		
 		//selecting institute details and cities
-		OperatorImplementation optimpl = new OperatorImplementation();
-		HashMap<String, Object> institutedetailmap = optimpl.editInstitute(session, instituteid);
+		
+		
 		Integer selectedstate =Integer.parseInt(institutedetailmap.get("stateid").toString());
 		map.addAttribute("cities",adminimpl.showcities(session, selectedstate, 3, -1, -1));
 		map.addAttribute("institutedetails", institutedetailmap);
 		//System.out.println(adminimpl.showcities(session, selectedstate, 3, -1, -1).toString());
 		
 		
+		request.setAttribute("mytypeedu", mytypedu);
+		
 		session.close();
 		System.out.println("exit editinstitute form");
 	}
-	public void updateInstituteForm(Institute inst,Member mem){
+	public void updateInstituteForm(HttpServletRequest req){
 		System.out.println("entered update service method");
 		Session session = factory.openSession();
 		
 		OperatorImplementation optimpl = new OperatorImplementation();
-		optimpl.updateInstitute(session, inst, mem);
+		optimpl.updateInstitute(session, req);
 		
 		session.close();
 		System.out.println("exit update service methods");

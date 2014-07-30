@@ -2,13 +2,14 @@ package education.bean;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
 public class PK_Institute_TypeEdu implements Serializable{
-	private Institute Institute_id;
+	/*private Institute Institute_id;
 	private TypeEdu Type_Edu_ID;
 
 	@ManyToOne
@@ -26,6 +27,25 @@ public class PK_Institute_TypeEdu implements Serializable{
 	}
 	public void setType_Edu_ID(TypeEdu type_Edu_ID) {
 		Type_Edu_ID = type_Edu_ID;
+	}*/
+	private int instituteid;
+	private int typeduid;
+	
+	@Column(name="Institute_ID")
+	public int getInstituteid() {
+		return instituteid;
 	}
+	public void setInstituteid(int instituteid) {
+		this.instituteid = instituteid;
+	}
+	@Column(name="Type_Edu_ID")
+	public int getTypeduid() {
+		return typeduid;
+	}
+	public void setTypeduid(int typeduid) {
+		this.typeduid = typeduid;
+	}
+	
+	
 
 }
