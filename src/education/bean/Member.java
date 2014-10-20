@@ -11,11 +11,12 @@ import javax.persistence.ManyToOne;
 public class Member {
 
 	private int id;
-	private UserType user_type_id;
+	private String user_type_id;
 	private String name;
 	private int is_active;
 	private String email;
 	private String phone;
+	private int created_by_id;
 	private Date created_date;
 	
 	@Id
@@ -25,12 +26,12 @@ public class Member {
 	public void setId(int id) {
 		this.id = id;
 	}
-	@ManyToOne
-	@JoinColumn(name="user_type_id",referencedColumnName="id")
-	public UserType getUser_type_id() {
+//	@ManyToOne
+//	@JoinColumn(name="user_type_id",referencedColumnName="id")
+	public String getUser_type_id() {
 		return user_type_id;
 	}
-	public void setUser_type_id(UserType user_type_id) {
+	public void setUser_type_id(String user_type_id) {
 		this.user_type_id = user_type_id;
 	}
 	public String getName() {
@@ -58,6 +59,13 @@ public class Member {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+	
+	public int getCreated_by_id() {
+		return created_by_id;
+	}
+	public void setCreated_by_id(int created_by_id) {
+		this.created_by_id = created_by_id;
+	}
 	public Date getCreated_date() {
 		return created_date;
 	}
@@ -65,5 +73,9 @@ public class Member {
 		this.created_date = created_date;
 	}
 	
-	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "usertypeid->"+getUser_type_id()+"\nemailid=>"+getEmail()+"\nname=>"+getName()+"\nphone=>"+getPhone();
+	}	
 }

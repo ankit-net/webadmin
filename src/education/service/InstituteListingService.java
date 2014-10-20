@@ -140,12 +140,12 @@ public class InstituteListingService {
 	}
 
 	
-	public void submitInstituteAddForm(HttpServletRequest request){
+	public void submitInstituteAddForm(Institute institute,Member member,int userid){
 		System.out.println("entered submit institute addform service");
 		Session session = factory.openSession(); 
 		
 		OperatorImplementation optimpl = new OperatorImplementation();
-		optimpl.addInstitute(session, request);
+		optimpl.addInstitute(session, institute,member,userid);
 		
 		session.close();
 		

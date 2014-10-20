@@ -16,11 +16,10 @@ public class Institute {
 	private Member member_id;
 	private int yearoffrom;
 	private String josh_rating;
-	private Institute_Type instype;
+	private Institute_Type institute_type;
 	private String about;
 	private City city_id;
 	private State state_id;
-	
 	private int is_active;
 	private AdminUser created_by_id;
 	private Date created_date;
@@ -37,7 +36,7 @@ public class Institute {
 	}
 	
 	@OneToOne
-	@JoinColumn(name="member_id",referencedColumnName="id")
+	@JoinColumn(name="member_id", referencedColumnName="id")
 	public Member getMember_id() {
 		return member_id;
 	}
@@ -56,13 +55,14 @@ public class Institute {
 	public void setJosh_rating(String josh_rating) {
 		this.josh_rating = josh_rating;
 	}
+	
 	@ManyToOne
 	@JoinColumn(name="institute_type",referencedColumnName="id")
-	public Institute_Type getInstype() {
-		return instype;
+	public Institute_Type getInstitute_type() {
+		return institute_type;
 	}
-	public void setInstype(Institute_Type instype) {
-		this.instype = instype;
+	public void setInstitute_type(Institute_Type institute_type) {
+		this.institute_type = institute_type;
 	}
 	public String getAbout() {
 		return about;
@@ -86,14 +86,6 @@ public class Institute {
 	public void setState_id(State state_id) {
 		this.state_id = state_id;
 	}
-	/*@ManyToOne
-	@JoinColumn(name="country_id",referencedColumnName="id")
-	public Country getCountry_id() {
-		return country_id;
-	}
-	public void setCountry_id(Country country_id) {
-		this.country_id = country_id;
-	}*/
 	public int getIs_active() {
 		return is_active;
 	}
@@ -132,5 +124,6 @@ public class Institute {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+	
 	
 }

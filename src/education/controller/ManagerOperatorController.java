@@ -1,7 +1,6 @@
 package education.controller;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,18 +9,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import education.bean.AdminUser;
-import education.bean.City;
-import education.bean.Country;
 import education.bean.Institute;
-import education.bean.Institute_Type;
 import education.bean.Member;
-import education.bean.State;
-import education.bean.UserType;
 import education.service.InstituteListingService;
 
 @Controller
@@ -130,17 +124,27 @@ public class ManagerOperatorController {
 	@RequestMapping(value="/addinstitute",method=RequestMethod.GET)
 	public String getAddForm(ModelMap map){
 		System.out.println("entered getaddForm controller");
+		Institute instbean = new Institute();
+		map.addAttribute("instbean", instbean);
+		Member memberbean = new Member();
+		map.addAttribute("membean", memberbean);
 		
 		instservice.getInstituteAddForm(map);
 		
 		System.out.println("exit getaddform controller");
 		return "operator/addinst";
-	}
 	
+	}
 	@RequestMapping(value="/addinstitute",method=RequestMethod.POST)
-	public String submitAddForm(HttpServletRequest req){
-		System.out.println("entered submitadd form");		
-		
+	public String submitAddForm(HttpServletRequest req,
+			@ModelAttribute("instbean") Institute institute,
+			@ModelAttribute("membean") Member member){
+		System.out.println("entered submitadd form");
+		System.out.println("instbean \naddress=>"+institute.getAddress()+"\nrating=>"+institute.getJosh_rating()+"\nsource=>"+institute.getSource()+"\nkeyword=>"+institute.getKeyword()+"\nabout=>"+institute.getAbout()+"\nyear=>"+institute.getYearoffrom());
+		//System.out.println("institute stateid=>"+institute.getState_id().getId()+"\n cityid=>"+institute.getCity_id().getId());
+		System.out.println("membean name=>"+member.getName());
+		//System.out.println("institute=>"+institute);
+		//System.out.println("member=>"+member);
 		HttpSession session = req.getSession(false);
 		
 		if(session != null && session.getAttribute("userid") != null){
@@ -148,7 +152,7 @@ public class ManagerOperatorController {
 			req.setAttribute("userid", userid);
 			System.out.println("userid=>"+userid);
 				
-			instservice.submitInstituteAddForm(req);
+			instservice.submitInstituteAddForm(institute,member,Integer.parseInt(userid));
 			
 			return "redirect:/userinterface.do";
 		}

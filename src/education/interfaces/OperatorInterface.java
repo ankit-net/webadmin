@@ -20,7 +20,7 @@ import education.bean.Member;
  */
 public interface OperatorInterface {
 	
-	void addInstitute(Session session,HttpServletRequest request);
+	void addInstitute(Session session,Institute institute,Member member,int userid);
 	
 	HashMap<String, Object> editInstitute(Session session,int instituteid);
 	

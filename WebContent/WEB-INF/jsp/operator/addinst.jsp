@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib  uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -29,37 +30,50 @@ tinyMCE.init({
 <body>
 	<h2 align="center">Add Institute Form</h2>
 	<form action="<%=request.getContextPath()%>/addinstitute.do" method="post">
+		
+		
 			User Type:	
+			<spring:bind path="membean.user_type_id">
 				<c:forEach var="ut"  items="${usertypes}">
-					<input type="radio" name="usertype" value="${ut.id}"/><c:out value="${ut.name}"/>
-	
+					<input type="radio" name="user_type_id" value="${ut.id}"/><c:out value="${ut.name}"/>	
 				</c:forEach>
+			</spring:bind>
 	<br/>
-			EmailID: <input type="text" name="email"/> <br/>
 	
-			Institute Name:<input type="text" name="name"> <br/>
+			EmailID: <spring:bind path="membean.email"><input type="text" name="email"/></spring:bind> <br/>
 	
-			Josh Rating: <input type="radio" value="Gold" name="rating"> Gold <input type="radio" value="Silver" name="rating"> Silver <input type="radio" value="Bronze" name="rating"> Bronze
-
+			Institute Name:<spring:bind path="membean.name"><input type="text" name="name"> </spring:bind><br/>
+	
+			Josh Rating: 
+			<spring:bind path="instbean.josh_rating">			
+				<input type="radio" value="Gold" name="josh_rating"> Gold <input type="radio" value="Silver" name="josh_rating"> Silver <input type="radio" value="Bronze" name="josh_rating"> Bronze
+			</spring:bind>
 	<br/>
 		
-			Primary Number: <input type="text" name="phone"><br/>
+			Primary Number:<spring:bind path="membean.phone"> <input type="text" name="phone"></spring:bind><br/>
 	
 			Institute Type: 
+				<spring:bind path="instbean.instype">
 					<c:forEach var="insttype" items="${insttypes}">
 						<input type="radio" name="institutetype" id="institutetype" value="${insttype.id}"><c:out value="${insttype.name}"/><br/>
 					</c:forEach>
+				</spring:bind>
 					<br/>
 					
-			Year of Formation : <select name="year" >
-								 	<c:forEach var="year" items="${totalyears}">
-										<option value="${year}"><c:out value="${year}"/></option>
-									</c:forEach>					
-								</select>
+			Year of Formation :	<spring:bind path="instbean.yearoffrom"> 
+									<select name="yearoffrom" >
+									 	<c:forEach var="year" items="${totalyears}">
+											<option value="${year}"><c:out value="${year}"/></option>
+										</c:forEach>						
+									</select>
+								</spring:bind>
 	<br/>
 						
-			About The Institute: <textarea rows="20" cols="100"  id="about" name="about"></textarea>
+			About The Institute:<spring:bind path="instbean.about"> <textarea rows="20" cols="100"  id="about" name="about"></textarea></spring:bind>
+	
+	
 	<br/>
+	
 			Type of Education: <c:forEach var="typebean" items="${typeedu}">
 									<input type="checkbox" name="typeedu" id="typeedu" value="${typebean.id}"/><c:out value="${typebean.name}"/><br/>
 								</c:forEach>
@@ -68,33 +82,35 @@ tinyMCE.init({
 			Level of Education: <c:forEach var="levelbean" items="${leveledu}">
 									<input type="checkbox" name="leveledu" id="leveledu" value="${levelbean.id}"/><c:out value="${levelbean.name}"/><br/>
 								</c:forEach>
-	<br/>
-			Keyword:			<input type="text" name="keyword"/>
-			
-	<br/>
-			Source:				<input type="text"	name="source" >	
-			
-	<br/>
-			Address:			<textarea rows="20" cols="100" id="address" name="address"></textarea>		
-	
 	
 	<br/>
-			State: <select name="allstates" id="allstates">
+			Keyword:	<spring:bind path="instbean.keyword">		<input type="text" name="keyword"/></spring:bind>
+			
+	<br/>
+			Source:		<spring:bind path="instbean.source">		<input type="text"	name="source" ></spring:bind>	
+			
+	<br/>
+			Address:	<spring:bind path="instbean.address">		<textarea rows="20" cols="100" id="address" name="address"></textarea></spring:bind>		
+	
+	
+ 	<br/>
+			State:<spring:bind path="instbean.state_id"> <select name="state_id" id="state_id">
 						<option value="-1">--Please Select--</option>
 						<c:forEach var="state" items="${states}">
 							<option value="${state.id}">${state.name}</option>					
 						</c:forEach>
 					</select>
-			
+			</spring:bind>
 	<br/>
 	
-			Cities: <select name="allcitieslist" id="allcitieslist">
-						
+			Cities:<spring:bind path="instbean.city_id"> 
+						<select name="city_id" id="city_id">
+							
+				
+						</select>				
+					</spring:bind>
 			
-					</select>			
-			
-			
-			
+		 	
 	<br/>
 			<input type="submit" value="Submit">
 	</form>				
